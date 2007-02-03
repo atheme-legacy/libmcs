@@ -9,11 +9,11 @@ OBJECTIVE_SONAME_SUFFIX = 1
 CFLAGS += $(PICFLAGS) -I.. -DPLUGIN_DIR=\"${libdir}/mcs\"
 
 SOURCES = \
-	mcs_plugin_loader.c \
+	mcs_backends.c \
 	mcs_handle_factory.c \
 	mcs_init.c \
-	mcs_backend_registration.c \
-	mcs_list.c
+	mcs_list.c \
+	mcs_loader.c
 
 LIBADD += -ldl
 
