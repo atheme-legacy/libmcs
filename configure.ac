@@ -53,6 +53,43 @@ fi
 
 AC_SUBST(GCONF_BUILD)
 
+# Module support
+AC_MSG_CHECKING([for what extension and flags to use for plugin compilation])
+case "$target" in
+        *-apple-*)
+                AC_MSG_RESULT([Mac OS X: -fPIC -bundle -fno-common -flat_namespace -undefined suppress, .dylib])
+                PICFLAGS="-fPIC -DPIC"
+                PICLDFLAGS="-fPIC -DPIC -bundle -fno-common -flat_namespace -undefined suppress"
+                LIBLDFLAGS="-dynamiclib"
+                SHARED_SUFFIX=".dylib"
+                ;;
+        *)
+                AC_MSG_RESULT([libdl-compatible: -fPIC -DPIC -shared, .so])
+                PICFLAGS="-fPIC -DPIC"
+                PICLDFLAGS="-fPIC -DPIC -shared"
+                LIBLDFLAGS="-fPIC -DPIC -shared"
+                SHARED_SUFFIX=".so"
+                ;;
+esac
+AC_SUBST(PICFLAGS)
+AC_SUBST(PICLDFLAGS)
+AC_SUBST(LIBLDFLAGS)
+AC_SUBST(SHARED_SUFFIX)
+AC_DEFINE_UNQUOTED(SHARED_SUFFIX, "${SHARED_SUFFIX}",
+        [Define the shared module suffix extension on your platform.])
+
+AC_MSG_CHECKING([if you are running Apple-GCC])
+case "$target" in
+        *-apple-*)
+                AC_MSG_RESULT([yes, sorry you poor bastard])
+                LDFLAGS="$LDFLAGS -Wl,-framework -Wl,CoreFoundation -Wl,-framework -Wl,CoreServices"
+                ;;
+        *)
+                AC_MSG_RESULT([no])
+                ;;
+esac
+
+
 AC_CONFIG_FILES([libmcs.pc mk/rules.mk])
 AC_OUTPUT
 
