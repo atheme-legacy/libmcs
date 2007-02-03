@@ -64,6 +64,7 @@ mcs_backend_select(void)
 	char buf[1024];
 	FILE *f;
 	mcs_list_t *l;
+	char *tptr;
 
 	if (env != NULL)
 		return env;
@@ -93,7 +94,10 @@ mcs_backend_select(void)
 		}
 	}
 
-	*(strchr(buf, '\n')) = '\0';
+	if ((tptr = strchr(buf, '\n')) != NULL)
+		*tptr = '\0';
+	else
+		return "default";
 
 	/* check to make sure we have this backend */
 	for (l = mcs_backend_get_list(); l != NULL; l = l->next)
@@ -104,5 +108,5 @@ mcs_backend_select(void)
 			return b->name;
 	}
 
-	return NULL;
+	return "default";
 }
