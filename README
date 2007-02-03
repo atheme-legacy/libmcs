@@ -11,7 +11,7 @@ Contents
 3. Installation
 4. Using mcs in your programs
 5. Reporting a bug that you have found in mcs
-
+6. The mcs userland tools
 
 1. What is mcs?
 -=-=-=-=-=-=-=-
@@ -99,6 +99,20 @@ A simple example would be this snippet of C code:
 
 Please send mail to bugs+libmcs -at- atheme.org, and include a code
 snippet which demonstrates the irregular behaviour.
+
+
+6. The mcs userland tools
+-=-=-=-=-=-=-=-=-=-=-=-=-
+
+mcs includes a number of userland tools for the maintainance of the
+mcs system. These tools are:
+
+   mcs-query-backends: Queries mcs for what backends are available.
+   mcs-getconfval    : Queries mcs for a configuration value.
+   mcs-setconfval    : Instructs mcs to change a configuration
+                       value.
+
+Other tools will be added as they are found to be necessary.
 
 Thank you for using mcs.
 
