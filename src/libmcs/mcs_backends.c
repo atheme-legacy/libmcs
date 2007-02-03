@@ -77,11 +77,21 @@ mcs_backend_select(void)
 
 	f = fopen(buf, "rb");
 
-	if (f == NULL)
-		return NULL;
+	if (f != NULL)
+	{
+		fread(&buf, 1024, 1, f);
+		fclose(f);
+	}
+	else
+	{
+		f = fopen("/etc/mcs-backend", "rb");  /* XXX: should respect --sysconfdir */
 
-	fread(&buf, 1024, 1, f);
-	fclose(f);
+		if (f != NULL)
+		{
+			fread(&buf, 1024, 1, f);
+			fclose(f);
+		}
+	}
 
 	/* check to make sure we have this backend */
 	for (l = mcs_backend_get_list(); l != NULL; l = l->next)
