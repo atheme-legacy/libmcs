@@ -1,0 +1,106 @@
+mcs - modular config system
+-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+mcs is free but copyrighted software, check COPYING for details.
+
+Contents
+--------
+
+1. What is mcs?
+2. Available storage backends
+3. Installation
+4. Using mcs in your programs
+5. Reporting a bug that you have found in mcs
+
+
+1. What is mcs?
+-=-=-=-=-=-=-=-
+
+mcs is a library and set of userland tools which abstract the
+storage of configuration settings away from userland applications.
+
+It is hoped that by using mcs, that the applications which use it
+will generally have a more congruent feeling in regards to settings.
+
+There have been other projects like this before (such as GConf), but
+unlike those projects, mcs strictly handles abstraction. It does not
+impose any specific data storage requirement, nor is it tied to any
+desktop environment or software suite.
+
+Because mcs is licenced under the BSD license, it is hoped that many
+applications will adopt it's use.
+
+
+2. Available storage backends
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+The default storage backend (unless a different one is set in your
+environment), is one which stores freedesktop.org keyfile standard
+compliant files in accordance to the freedesktop XDG specification.
+
+Additionally, a GConf storage backend is available for users who
+would prefer to use that instead.
+
+To change the selected storage backend, simply export the MCS_BACKEND
+environment variable, and mcs will handle the rest automatically.
+
+
+3. Installation
+-=-=-=-=-=-=-=-
+
+Installation is fairly typical:
+
+  $ ./configure
+  $ make
+  $ sudo make install
+
+(If sudo isn't on your system, su to root.)
+
+
+4. Using mcs in your programs
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+A simple example would be this snippet of C code:
+
+  #include <libmcs/mcs.h>
+
+  int main(int argc, const char *argv[])
+  {
+     mcs_handle_t *mcs;
+     char *foo;
+
+     mcs_init();
+
+     mcs = mcs_new("fooapp");
+     foo = "fooapp rocks!";
+
+     mcs_set_string(mcs, "general", "infoline", foo);
+
+     mcs_get_string(mcs, "general", "infoline", &foo);
+
+     printf("%s\n", foo);
+
+     mcs_fini();
+
+     return 0;
+  }
+
+  When run, this program would produce:
+
+    fooapp rocks!
+
+  The following keys in mcs would be created and committed:
+
+    /fooapp/general/infoline = "fooapp rocks!"
+
+
+5. Reporting a bug that you have found in mcs
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+Please send mail to bugs+libmcs -at- atheme.org, and include a code
+snippet which demonstrates the irregular behaviour.
+
+Thank you for using mcs.
+
+--
+William Pitcock <nenolod -at- sacredspiral.co.uk>
