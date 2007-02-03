@@ -31,6 +31,8 @@ AC_C_CONST
 # Checks for library functions.
 AC_FUNC_CLOSEDIR_VOID
 AC_CHECK_FUNCS([strstr], , [AC_ERROR([strstr is required for the plugin loader, sorry.])])
+AC_CHECK_FUNCS([memset setlocale strcasecmp strchr strdup strerror strtol strtod])
+AC_FUNC_STAT
 
 # Check for optional features.
 AC_ARG_ENABLE(gconf,
