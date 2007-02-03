@@ -46,3 +46,8 @@ mcs_fini(void)
 	mcs_unload_plugins(mcs_backends_lst);
 }
 
+char *
+mcs_version(void)
+{
+	return strdup(PACKAGE_NAME "-" PACKAGE_VERSION);
+}

@@ -131,9 +131,10 @@ typedef struct mcs_list_ {
  * These functions have to do with initialization of the
  * library.
  */
-extern void mcs_init(void);
-extern void mcs_fini(void);
-
+extern void  mcs_init(void);
+extern void  mcs_fini(void);
+extern char *mcs_version(void);
+ 
 /*
  * These functions have to do with registration of MCS backends.
  */
