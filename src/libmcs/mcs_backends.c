@@ -79,7 +79,7 @@ mcs_backend_select(void)
 
 	if (f != NULL)
 	{
-		fread(&buf, 1024, 1, f);
+		fgets(buf, 1024, f);
 		fclose(f);
 	}
 	else
@@ -88,10 +88,12 @@ mcs_backend_select(void)
 
 		if (f != NULL)
 		{
-			fread(&buf, 1024, 1, f);
+			fgets(buf, 1024, f);
 			fclose(f);
 		}
 	}
+
+	*(strchr(buf, '\n')) = '\0';
 
 	/* check to make sure we have this backend */
 	for (l = mcs_backend_get_list(); l != NULL; l = l->next)
