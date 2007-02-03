@@ -21,7 +21,7 @@ OBJECTS = ${SOURCES:.c=.o}
 
 INCLUDEDIR = ${prefix}/include/libmcs
 
-HEADERS = mcs.h
+HEADERS = mcs.h mcs_config.h
 
 include ../../mk/objective.mk
 

@@ -42,6 +42,8 @@
 #include <stdio.h>
 #include <limits.h>
 
+#include <libmcs/mcs_config.h>
+
 typedef enum {
 	MCS_FAIL, MCS_OK
 } mcs_response_t;
