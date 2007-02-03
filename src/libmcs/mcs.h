@@ -41,6 +41,7 @@
 #include <dirent.h>
 #include <stdio.h>
 #include <limits.h>
+#include <stdarg.h>
 
 #include <libmcs/mcs_config.h>
 
@@ -227,5 +228,12 @@ extern mcs_list_t *mcs_list_remove(mcs_list_t *head);
 extern mcs_list_t *mcs_list_find(mcs_list_t *head, void *data);
 extern mcs_list_t *mcs_list_remove_data(mcs_list_t *head, void *data);
 extern void mcs_list_free(mcs_list_t *head);
+
+/*
+ * These functions have to do with logging.
+ */
+typedef void (*mcs_log_func_t)(const char *text);
+extern void mcs_log(const char *fmt, ...);
+extern void mcs_log_set_log_func(mcs_log_func_t func);
 
 #endif
