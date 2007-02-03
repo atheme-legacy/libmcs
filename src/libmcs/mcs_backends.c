@@ -56,3 +56,41 @@ mcs_backend_get_list(void)
 {
 	return mcs_backends_lst;
 }
+
+char *
+mcs_backend_select(void)
+{
+	char *env = getenv("MCS_BACKEND");
+	char buf[1024];
+	FILE *f;
+	mcs_list_t *l;
+
+	if (env != NULL)
+		return env;
+
+	env = getenv("HOME");
+
+	if (env == NULL)
+		return NULL;
+
+	snprintf(buf, 1024, "%s/.mcs-backend", env);
+
+	f = fopen(buf, "rb");
+
+	if (f == NULL)
+		return NULL;
+
+	fread(&buf, 1024, 1, f);
+	fclose(f);
+
+	/* check to make sure we have this backend */
+	for (l = mcs_backend_get_list(); l != NULL; l = l->next)
+	{
+		mcs_backend_t *b = (mcs_backend_t *) l->data;
+
+		if (!strcasecmp(b->name, buf))
+			return b->name;
+	}
+
+	return NULL;
+}

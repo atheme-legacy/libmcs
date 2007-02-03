@@ -40,7 +40,7 @@ mcs_handle_t *
 mcs_new(char *domain)
 {
 	mcs_list_t *n;
-	char *magic = getenv("MCS_BACKEND");
+	char *magic = mcs_backend_select();
 
 	if (magic == NULL)
 		magic = "default";
