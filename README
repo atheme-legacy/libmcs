@@ -111,6 +111,8 @@ mcs system. These tools are:
    mcs-getconfval    : Queries mcs for a configuration value.
    mcs-setconfval    : Instructs mcs to change a configuration
                        value.
+   mcs-info          : Displays information about the current
+                       installation and configuration of mcs.
 
 Other tools will be added as they are found to be necessary.
 
