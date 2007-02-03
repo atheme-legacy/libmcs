@@ -85,13 +85,13 @@ A simple example would be this snippet of C code:
      return 0;
   }
 
-  When run, this program would produce:
+When run, this program would produce:
 
-    fooapp rocks!
+  fooapp rocks!
 
-  The following keys in mcs would be created and committed:
+The following keys in mcs would be created and committed:
 
-    /fooapp/general/infoline = "fooapp rocks!"
+  /fooapp/general/infoline = "fooapp rocks!"
 
 
 5. Reporting a bug that you have found in mcs
