@@ -137,6 +137,7 @@ extern void mcs_fini(void);
  */
 extern mcs_response_t mcs_backend_register(mcs_backend_t *backend);
 extern mcs_response_t mcs_backend_unregister(mcs_backend_t *backend);
+extern mcs_list_t *   mcs_backend_get_list(void);
 
 /*
  * These functions provide the public interface for creating and closing MCS

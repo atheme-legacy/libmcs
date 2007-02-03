@@ -46,5 +46,13 @@ mcs_backend_register(mcs_backend_t *b)
 mcs_response_t
 mcs_backend_unregister(mcs_backend_t *b)
 {
+	mcs_backends_lst = mcs_list_remove_data(mcs_backends_lst, b);
+
 	return MCS_OK;
+}
+
+mcs_list_t *
+mcs_backend_get_list(void)
+{
+	return mcs_backends_lst;
 }
