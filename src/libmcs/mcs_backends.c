@@ -84,7 +84,7 @@ mcs_backend_select(void)
 	}
 	else
 	{
-		f = fopen("/etc/mcs-backend", "rb");  /* XXX: should respect --sysconfdir */
+		f = fopen(MCS_SYSCONFDIR "/mcs-backend", "rb");
 
 		if (f != NULL)
 		{

@@ -6,7 +6,7 @@ PICLDFLAGS = $(LIBLDFLAGS)
 OBJECTIVE_LIBS = libmcs$(SHARED_SUFFIX)
 OBJECTIVE_SONAME_SUFFIX = 1
 
-CFLAGS += $(PICFLAGS) -I.. -DPLUGIN_DIR=\"${libdir}/mcs\"
+CFLAGS += $(PICFLAGS) -I.. -DPLUGIN_DIR=\"${libdir}/mcs\" -DMCS_SYSCONFDIR=\"${sysconfdir}\"
 
 SOURCES = \
 	mcs_backends.c \
