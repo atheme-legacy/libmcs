@@ -36,7 +36,7 @@ int
 main(int argc, char *argv[])
 {
 	mcs_handle_t *h;
-	char *foo;
+	char *foo = NULL;
 
 	if (argc < 4)
 	{
