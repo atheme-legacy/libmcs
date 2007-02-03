@@ -3,7 +3,7 @@
 
 AC_PREREQ(2.59)
 AC_INIT([libmcs], [0.2.0], [bugs+libmcs@atheme.org])
-AC_CONFIG_SRCDIR([src/libmcs/mcs_plugin_loader.c])
+AC_CONFIG_SRCDIR([src/libmcs/mcs_loader.c])
 AC_CONFIG_HEADER([src/libmcs/mcs_config.h])
 
 # Checks for programs.
