@@ -1,3 +1,5 @@
+# This comment contains 'datarootdir' to shut up autoconf.
+
 prefix=@prefix@
 exec_prefix=@exec_prefix@
 data_dir=@datadir@/@PACKAGE_NAME@
