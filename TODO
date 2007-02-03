@@ -1,0 +1,9 @@
+Things to do before mcs 0.2 is released
+---------------------------------------
+
+Logging support: (not very important)
+  - ability to get debugging/warning messages to the application
+  - actually ADD some debugging messages
+
+Move to GIT: (DONE)
+
