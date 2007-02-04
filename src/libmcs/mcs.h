@@ -244,5 +244,7 @@ extern void mcs_log_set_log_func(mcs_log_func_t func);
 extern size_t mcs_strnlen(const char *str, size_t len);
 extern char * mcs_strndup(const char *str, size_t len);
 extern int mcs_create_directory(const char *path, mode_t mode);
+extern size_t mcs_strlcat(char *dest, const char *src, size_t count);
+extern size_t mcs_strlcpy(char *dest, const char *src, size_t count);
 
 #endif
