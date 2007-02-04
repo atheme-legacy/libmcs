@@ -182,6 +182,13 @@ keyfile_write(keyfile_t *self, const char *filename)
 	keyfile_section_t *sec;
 	keyfile_line_t *line;
 
+	if (f == NULL)
+	{
+		mcs_log("keyfile_write(): Failed to open `%s' for writing: %s",
+			filename, strerror(errno));
+		return MCS_FAIL;
+	}
+
 	for (n = self->sections; n != NULL; n = n->next)
 	{
 		sec = (keyfile_section_t *) n->data;
@@ -411,6 +418,8 @@ mcs_keyfile_new(char *domain)
 {
 	char scratch[PATH_MAX];
 	char *magic = getenv("XDG_CONFIG_HOME");
+	const mode_t mode755 = S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | 
+			       S_IXOTH;
 
 	mcs_keyfile_handle_t *h = calloc(sizeof(mcs_keyfile_handle_t), 1);
 	mcs_handle_t *out = calloc(sizeof(mcs_handle_t), 1);
@@ -420,9 +429,17 @@ mcs_keyfile_new(char *domain)
 
 	/* XXX */
 	if (magic != NULL)
-		snprintf(scratch, PATH_MAX, "%s/%s/config", magic, domain);
+	{
+		snprintf(scratch, PATH_MAX, "%s/%s", magic, domain);
+		mcs_create_directory(scratch, mode755);
+		strncat(scratch, "/config", PATH_MAX);
+	}
 	else
-		snprintf(scratch, PATH_MAX, "%s/.config/%s/config", getenv("HOME"), domain);
+	{
+  		snprintf(scratch, PATH_MAX, "%s/.config/%s", getenv("HOME"), domain);
+		mcs_create_directory(scratch, mode755);
+		strncat(scratch, "/config", PATH_MAX);
+	}
 
 	h->loc = strdup(scratch);
 	h->kf = keyfile_open(h->loc);
