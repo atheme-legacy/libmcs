@@ -432,13 +432,13 @@ mcs_keyfile_new(char *domain)
 	{
 		snprintf(scratch, PATH_MAX, "%s/%s", magic, domain);
 		mcs_create_directory(scratch, mode755);
-		strncat(scratch, "/config", PATH_MAX);
+		mcs_strlcat(scratch, "/config", PATH_MAX);
 	}
 	else
 	{
   		snprintf(scratch, PATH_MAX, "%s/.config/%s", getenv("HOME"), domain);
 		mcs_create_directory(scratch, mode755);
-		strncat(scratch, "/config", PATH_MAX);
+		mcs_strlcat(scratch, "/config", PATH_MAX);
 	}
 
 	h->loc = strdup(scratch);
