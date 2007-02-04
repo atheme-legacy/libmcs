@@ -73,7 +73,7 @@ mcs_create_directory(const char *path, mode_t mode)
 	{
 		char *ttptr = mcs_strndup(pptr, (size_t) (tptr - pptr));
 
-		if (mkdir(ttptr, mode) == -1)
+		if (mkdir(ttptr, mode) == -1 && errno != EEXIST)
 		{
 			mcs_log("mcs_create_directory(): mkdir failed: %s",
 				strerror(errno));
