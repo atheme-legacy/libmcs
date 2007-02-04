@@ -42,6 +42,7 @@
 #include <stdio.h>
 #include <limits.h>
 #include <stdarg.h>
+#include <errno.h>
 
 #include <libmcs/mcs_config.h>
 
@@ -235,5 +236,12 @@ extern void mcs_list_free(mcs_list_t *head);
 typedef void (*mcs_log_func_t)(const char *text);
 extern void mcs_log(const char *fmt, ...);
 extern void mcs_log_set_log_func(mcs_log_func_t func);
+
+/*
+ * These functions are utility functions.
+ */
+extern size_t mcs_strnlen(const char *str, size_t len);
+extern char * mcs_strndup(const char *str, size_t len);
+extern int mcs_create_directory(const char *path, mode_t mode);
 
 #endif

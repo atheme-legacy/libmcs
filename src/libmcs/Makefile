@@ -14,7 +14,8 @@ SOURCES = \
 	mcs_init.c \
 	mcs_list.c \
 	mcs_loader.c \
-	mcs_logger.c
+	mcs_logger.c \
+	mcs_util.c
 
 LIBADD += -ldl
 
