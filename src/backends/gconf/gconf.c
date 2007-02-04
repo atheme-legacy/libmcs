@@ -60,6 +60,9 @@ mcs_gconf_new(char *domain)
 	h->loc = strdup(scratch);
 	h->client = gconf_client_get_default();
 
+	if (h->client == NULL)
+		mcs_log("mcs_gconf_new(): Couldn't locate a GConf client handle to use.");
+
 	return out;
 }
 
