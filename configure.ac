@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([libmcs], [0.3.0], [bugs+libmcs@atheme.org])
+AC_INIT([libmcs], [0.3.1], [bugs+libmcs@atheme.org])
 AC_CONFIG_SRCDIR([src/libmcs/mcs_loader.c])
 AC_CONFIG_HEADER([src/libmcs/mcs_config.h])
 
