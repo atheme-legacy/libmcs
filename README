@@ -41,8 +41,25 @@ compliant files in accordance to the freedesktop XDG specification.
 Additionally, a GConf storage backend is available for users who
 would prefer to use that instead.
 
-To change the selected storage backend, simply export the MCS_BACKEND
-environment variable, and mcs will handle the rest automatically.
+To temporarily change the selected storage backend, simply export
+the MCS_BACKEND environment variable, and mcs will handle the
+rest automatically.
+
+You can also change the backend that mcs uses permanantly, in both
+the scope of a user account, and the default site-wide setting used.
+
+To set a different backend for a user account, simply run:
+
+  $ echo "gconf" > $HOME/.mcs-backend
+
+This will set the storage backend to gconf for the local user.
+
+To set a different default backend, you can do the same, but
+the filepath should be /etc/mcs-backend, or whatever your
+system configuration directory is, if it is not /etc.
+
+The selected backend can be verified by using the mcs-info(1)
+utility.
 
 
 3. Installation
@@ -89,7 +106,8 @@ When run, this program would produce:
 
   fooapp rocks!
 
-The following keys in mcs would be created and committed:
+The following keys in mcs would be created and committed to the
+configuration database:
 
   /fooapp/general/infoline = "fooapp rocks!"
 
@@ -99,6 +117,11 @@ The following keys in mcs would be created and committed:
 
 Please send mail to bugs+libmcs -at- atheme.org, and include a code
 snippet which demonstrates the irregular behaviour.
+
+Alternatively, you can try the Atheme bugtracker, at:
+   http://bugs-meta.atheme.org
+
+You will want to select the libmcs project for reporting bugs this way.
 
 
 6. The mcs userland tools
