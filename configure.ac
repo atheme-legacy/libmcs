@@ -23,8 +23,7 @@ AC_CHECK_LIB([dl], [dlopen], , [AC_ERROR([libdl is required for compilation])])
 # Checks for header files.
 AC_HEADER_DIRENT
 AC_HEADER_STDC
-AC_CHECK_HEADERS([limits.h stdlib.h string.h unistd.h locale.h stdarg.h 
-	sys/types.h sys/stat.h errno.h])
+AC_CHECK_HEADERS([limits.h stdlib.h string.h unistd.h locale.h stdarg.h sys/types.h sys/stat.h errno.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
