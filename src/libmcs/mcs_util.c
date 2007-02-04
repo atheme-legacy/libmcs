@@ -68,19 +68,27 @@ mcs_create_directory(const char *path, mode_t mode)
 
 	pptr = strdup(path);
 
-	for (tptr = strchr(pptr, '/'); tptr != NULL && *tptr != '\0';
-		tptr = strchr(NULL, '/'))
+	/* make the structure before this directory */
+	for (tptr = strchr(pptr + 1, '/'); tptr != NULL && *tptr != '\0';
+		tptr = strchr(tptr + 1, '/'))
 	{
 		char *ttptr = mcs_strndup(pptr, (size_t) (tptr - pptr));
 
 		if (mkdir(ttptr, mode) == -1 && errno != EEXIST)
 		{
-			mcs_log("mcs_create_directory(): mkdir failed: %s",
-				strerror(errno));
+			mcs_log("mcs_create_directory(): mkdir '%s': %s",
+				ttptr, strerror(errno));
 			return -1;
 		}
 
 		free(ttptr);
+	}
+
+	if (mkdir(pptr, mode) == -1 && errno != EEXIST)
+	{
+		mcs_log("mcs_create_directory(): mkdir '%s': %s",
+			pptr, strerror(errno));
+		return -1;
 	}
 
 	free(pptr);
