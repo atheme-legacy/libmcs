@@ -3,7 +3,7 @@ include ../../../mk/init.mk
 
 OBJECTIVE_LIBS = libgconf.so
 
-libdir = ${exec_prefix}/lib/mcs
+LIBDIR = ${libdir}/mcs
 
 CFLAGS += -fPIC -DPIC -I../.. -DPLUGIN_DIR=\"${libdir}/mcs\" ${GCONF_CFLAGS}
 
