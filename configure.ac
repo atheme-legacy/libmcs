@@ -53,6 +53,22 @@ fi
 
 AC_SUBST(GCONF_BUILD)
 
+AC_ARG_ENABLE(kconfig,
+    [  --enable-kconfig        enable KDE KConfig support (default=disabled)],
+    [enable_kconfig=$enableval],
+    [enable_kconfig="no"]
+)
+
+if test "$enable_kconfig" = "yes"; then
+   AC_PROG_CXX
+
+   AC_CHECK_LIB([kdecore], [main], [], [AC_MSG_ERROR([Cannot find libkdecore])])
+
+   KCONFIG_BUILD="kconfig"
+fi
+
+AC_SUBST(KCONFIG_BUILD)
+
 # Module support
 AC_MSG_CHECKING([for what extension and flags to use for plugin compilation])
 case "$target" in
@@ -98,6 +114,7 @@ cat << _EOF_
 Configuration:
         Keyfile backend: yes
         GConf backend  : $enable_gconf
+	KConfig backend: $enable_kconfig
 
 Now type "make" to build, and "make install" to install.
 Thank you for using mcs.
