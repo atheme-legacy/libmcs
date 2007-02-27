@@ -17,8 +17,7 @@ PACKAGE="libmcs"
 AC_SUBST(PACKAGE)
 
 # Checks for libraries.
-# FIXME: Replace `main' with a function in `-ldl':
-AC_CHECK_LIB([dl], [dlopen], , [AC_ERROR([libdl is required for compilation])])
+AM_DL
 
 # Checks for header files.
 AC_HEADER_DIRENT

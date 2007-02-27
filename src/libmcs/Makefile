@@ -17,8 +17,6 @@ SOURCES = \
 	mcs_logger.c \
 	mcs_util.c
 
-LIBADD += -ldl
-
 OBJECTS = ${SOURCES:.c=.o}
 
 INCLUDEDIR = ${prefix}/include/libmcs
