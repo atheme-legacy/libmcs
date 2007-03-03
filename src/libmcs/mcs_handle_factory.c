@@ -178,8 +178,7 @@ mcs_get_keys(mcs_handle_t *self,
 /* ******************************************************************* */
 
 mcs_list_t *
-mcs_get_sections(mcs_handle_t *self,
-		 const char *section)
+mcs_get_sections(mcs_handle_t *self)
 {
 	return self->base->mcs_get_sections(self);
 }
