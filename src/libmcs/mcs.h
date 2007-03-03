@@ -47,6 +47,12 @@
 
 #include <libmcs/mcs_config.h>
 
+typedef struct mcs_list_ {
+	struct mcs_list_ *prev;
+	struct mcs_list_ *next;
+	void *data;
+} mcs_list_t;
+
 typedef enum {
 	MCS_FAIL, MCS_OK
 } mcs_response_t;
@@ -117,18 +123,19 @@ typedef struct {
 	mcs_response_t (*mcs_unset_key)(mcs_handle_t *handle,
 					const char *section,
 					const char *key);
+
+	/* key request */
+	mcs_list_t *(*mcs_get_keys)(mcs_handle_t *handle,
+				    const char *section);
+
+	/* sections request */
+	mcs_list_t *(*mcs_get_sections)(mcs_handle_t *handle);
 } mcs_backend_t;
 
 struct mcs_handle_ {
 	mcs_backend_t *base;
 	void *mcs_priv_handle;
 };
-
-typedef struct mcs_list_ {
-	struct mcs_list_ *prev;
-	struct mcs_list_ *next;
-	void *data;
-} mcs_list_t;
 
 /*
  * These functions have to do with initialization of the
@@ -215,6 +222,12 @@ extern mcs_response_t mcs_set_double(mcs_handle_t *handle,
 extern mcs_response_t mcs_unset_key(mcs_handle_t *handle,
 				const char *section,
 				const char *key);
+
+/* key request */
+extern mcs_list_t *mcs_get_keys(mcs_handle_t *handle,
+				const char *section);
+
+extern mcs_list_t *mcs_get_sections(mcs_handle_t *handle);
 
 /*
  * These functions have to do with the plugin loader.

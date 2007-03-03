@@ -554,6 +554,42 @@ mcs_keyfile_unset_key(mcs_handle_t *self, const char *section,
 	return keyfile_unset_key(h->kf, section, key);
 }
 
+mcs_list_t *
+mcs_keyfile_get_keys(mcs_handle_t *self, const char *section)
+{
+	mcs_keyfile_handle_t *h = (mcs_keyfile_handle_t *) self->mcs_priv_handle;
+	keyfile_section_t *ks = keyfile_locate_section(h->kf, section);
+	mcs_list_t *out = NULL, *iter;
+
+	if (ks == NULL)
+		return NULL;
+
+	for (iter = ks->lines; iter != NULL; iter = iter->next)
+	{
+		keyfile_line_t *kl = (keyfile_line_t *) iter->data;
+
+		out = mcs_list_append(out, strdup(kl->key));
+	}
+
+	return out;
+}
+
+mcs_list_t *
+mcs_keyfile_get_sections(mcs_handle_t *self)
+{
+	mcs_keyfile_handle_t *h = (mcs_keyfile_handle_t *) self->mcs_priv_handle;
+	mcs_list_t *out = NULL, *iter;
+
+	for (iter = h->kf->sections; iter != NULL; iter = iter->next)
+	{
+		keyfile_section_t *ks = (keyfile_section_t *) iter->data;
+
+		out = mcs_list_append(out, strdup(ks->name));
+	}
+
+	return out;
+}
+
 mcs_backend_t mcs_backend = {
 	NULL,
 	"default",
@@ -572,5 +608,8 @@ mcs_backend_t mcs_backend = {
 	mcs_keyfile_set_float,
 	mcs_keyfile_set_double,
 
-	mcs_keyfile_unset_key
+	mcs_keyfile_unset_key,
+
+	mcs_keyfile_get_keys,
+	mcs_keyfile_get_sections
 };

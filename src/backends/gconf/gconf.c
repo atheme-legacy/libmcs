@@ -294,6 +294,54 @@ mcs_gconf_unset_key(mcs_handle_t *self, const char *section,
 	return MCS_OK;
 }
 
+mcs_list_t *
+mcs_gconf_get_keys(mcs_handle_t *self, const char *section)
+{
+	mcs_gconf_handle_t *h = (mcs_gconf_handle_t *) self->mcs_priv_handle;
+	mcs_list_t *out;
+	GSList *pairs;
+	GError *error = NULL;
+
+	pairs = gconf_client_all_entries(h->client, mcs_gconf_build_keypath(h, NULL, section), &error);
+
+	for (; pairs != NULL; pairs = g_slist_next(pairs))
+	{
+		GConfEntry *val = (GConfEntry *) pairs->data;
+
+		out = mcs_list_append(out, strdup(val->key));
+
+		gconf_entry_free(val);
+	}
+
+	g_slist_free(pairs);
+
+	return out;
+}
+
+mcs_list_t *
+mcs_gconf_get_sections(mcs_handle_t *self)
+{
+	mcs_gconf_handle_t *h = (mcs_gconf_handle_t *) self->mcs_priv_handle;
+	mcs_list_t *out;
+	GSList *pairs;
+	GError *error = NULL;
+
+	pairs = gconf_client_all_dirs(h->client, h->loc, &error);
+
+	for (; pairs != NULL; pairs = g_slist_next(pairs))
+	{
+		gchar *val = (gchar *) pairs->data;
+
+		out = mcs_list_append(out, strdup(val));
+
+		g_free(val);
+	}
+
+	g_slist_free(pairs);
+
+	return out;
+}
+
 mcs_backend_t mcs_backend = {
 	NULL,
 	"gconf",
@@ -312,5 +360,8 @@ mcs_backend_t mcs_backend = {
 	mcs_gconf_set_float,
 	mcs_gconf_set_double,
 
-	mcs_gconf_unset_key
+	mcs_gconf_unset_key,
+
+	mcs_gconf_get_keys,
+	mcs_gconf_get_sections
 };

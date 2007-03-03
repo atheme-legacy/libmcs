@@ -165,3 +165,21 @@ mcs_unset_key(mcs_handle_t *self,
 {
 	return self->base->mcs_unset_key(self, section, key);
 }
+
+/* ******************************************************************* */
+
+mcs_list_t *
+mcs_get_keys(mcs_handle_t *self,
+	     const char *section)
+{
+	return self->base->mcs_get_keys(self, section);
+}
+
+/* ******************************************************************* */
+
+mcs_list_t *
+mcs_get_sections(mcs_handle_t *self,
+		 const char *section)
+{
+	return self->base->mcs_get_sections(self);
+}
