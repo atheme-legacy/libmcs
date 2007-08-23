@@ -251,6 +251,24 @@ namespace {
 		return MCS_OK;
 	}
 
+	mcs_list_t *
+	mcs_kconfig_get_groups(mcs_handle_t *self)
+	{
+		mcs_kconfig_handle_t *h = (mcs_kconfig_handle_t *) self->mcs_priv_handle;
+		mcs_list_t *out = NULL;
+
+		QStringList list = h->cfg->groupList();
+
+		for (QStringList::const_iterator i = list.constBegin();
+			i != list.constEnd(); i++)
+		{
+			QString str = *i;
+
+			out = mcs_list_append(out, strdup(str.toLocal8Bit().constData()));
+		}
+
+		return out;
+	}
 };
 
 mcs_backend_t mcs_backend = {
@@ -271,5 +289,8 @@ mcs_backend_t mcs_backend = {
 	mcs_kconfig_set_float,
 	mcs_kconfig_set_double,
 
-	mcs_kconfig_unset_key
+	mcs_kconfig_unset_key,
+
+	NULL,
+	mcs_kconfig_get_groups
 };
