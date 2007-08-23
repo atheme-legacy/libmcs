@@ -63,6 +63,9 @@ AC_ARG_ENABLE(kconfig,
 
 if test "$enable_kconfig" = "yes"; then
    AC_PROG_CXX
+   # XXX - is this Gentoo-specific?
+   CXXFLAGS="$CXXFLAGS -I/usr/kde/3.5/include -I/usr/qt/3/include"
+   LDFLAGS="$LDFLAGS -L/usr/kde/3.5/lib -I/usr/qt/3/lib"
 
    AC_CHECK_LIB([kdecore], [main], [], [AC_MSG_ERROR([Cannot find libkdecore])])
 
