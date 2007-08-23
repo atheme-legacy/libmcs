@@ -264,7 +264,7 @@ namespace {
 		{
 			QString str = *i;
 
-			out = mcs_list_append(out, strdup(str.local8Bit().constData()));
+			out = mcs_list_append(out, strdup(str.local8Bit()));
 		}
 
 		return out;
