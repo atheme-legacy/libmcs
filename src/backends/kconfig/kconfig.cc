@@ -48,204 +48,210 @@ typedef struct {
 	KConfig *cfg;
 } mcs_kconfig_handle_t;
 
-static mcs_handle_t *
-mcs_kconfig_new(char *domain)
-{
-	mcs_kconfig_handle_t *h = (mcs_kconfig_handle_t *)calloc(sizeof(mcs_kconfig_handle_t), 1);
-	mcs_handle_t *out = (mcs_handle_t *)calloc(sizeof(mcs_handle_t), 1);
+namespace {
 
-	if ( ! KApplication::kApplication() ) {
-	  /* Initialise a fake KDE application if none present */
+	mcs_handle_t *
+	mcs_kconfig_new(char *domain)
+	{
+		mcs_kconfig_handle_t *h = (mcs_kconfig_handle_t *)calloc(sizeof(mcs_kconfig_handle_t), 1);
+		mcs_handle_t *out = (mcs_handle_t *)calloc(sizeof(mcs_handle_t), 1);
 
-	  static char *fake_argv[] = { "mcs_backend" };
+		if (!KApplication::kApplication())
+		{
+	  		/* Initialise a fake KDE application if none present */
+			static char *fake_argv[] = { "mcs_backend" };
 
-	  KCmdLineArgs::init(1, fake_argv, "mcs_backend", "MCS KConfig Backend", "Just a fake application to be able to use KConfig backend with non-KDE applications.", "9999", false);
-	  new KApplication(false, false);
+			KCmdLineArgs::init(1, fake_argv, "mcs_backend", "MCS KConfig Backend",
+				"Just a fake application to be able to use KConfig backend with non-KDE applications.",
+				"9999", false);
+			new KApplication(false, false);
+		}
+
+		out->base = &mcs_backend;
+		out->mcs_priv_handle = h;
+
+		h->cfg = new KConfig(domain);
+
+		return out;
 	}
 
-	out->base = &mcs_backend;
-	out->mcs_priv_handle = h;
+	void
+	mcs_kconfig_destroy(mcs_handle_t *self)
+	{
+		mcs_kconfig_handle_t *h = (mcs_kconfig_handle_t *) self->mcs_priv_handle;
 
-	h->cfg = new KConfig(domain);
+		delete h->cfg;
+		free(h);
 
-	return out;
-}
+		free(self);
+	}
 
-static void
-mcs_kconfig_destroy(mcs_handle_t *self)
-{
-	mcs_kconfig_handle_t *h = (mcs_kconfig_handle_t *) self->mcs_priv_handle;
+	mcs_response_t
+	mcs_kconfig_get_string(mcs_handle_t *self, const char *section,
+			       const char *key, char **value)
+	{
+		mcs_kconfig_handle_t *h = (mcs_kconfig_handle_t *) self->mcs_priv_handle;
 
-	delete h->cfg;
-	free(h);
+		if ( ! h->cfg->hasGroup(section) )
+			return MCS_FAIL;
 
-	free(self);
-}
+		h->cfg->setGroup(section);
+		if ( ! h->cfg->hasKey(key) )
+			return MCS_FAIL;
 
-static mcs_response_t
-mcs_kconfig_get_string(mcs_handle_t *self, const char *section,
-		       const char *key, char **value)
-{
-	mcs_kconfig_handle_t *h = (mcs_kconfig_handle_t *) self->mcs_priv_handle;
+		QString entry = h->cfg->readEntry(key);
+		*value = strdup(entry.latin1());
 
-	if ( ! h->cfg->hasGroup(section) )
-	  return MCS_FAIL;
+		return MCS_OK;
+	}
 
-	h->cfg->setGroup(section);
-	if ( ! h->cfg->hasKey(key) )
-	  return MCS_FAIL;
-
-	QString entry = h->cfg->readEntry(key);
-	*value = strdup(entry.latin1());
-
-	return MCS_OK;
-}
-
-static mcs_response_t
-mcs_kconfig_get_int(mcs_handle_t *self, const char *section,
+	mcs_response_t
+	mcs_kconfig_get_int(mcs_handle_t *self, const char *section,
 		    const char *key, int *value)
-{
-	mcs_kconfig_handle_t *h = (mcs_kconfig_handle_t *) self->mcs_priv_handle;
+	{
+		mcs_kconfig_handle_t *h = (mcs_kconfig_handle_t *) self->mcs_priv_handle;
 
-	if ( ! h->cfg->hasGroup(section) )
-	  return MCS_FAIL;
+		if ( ! h->cfg->hasGroup(section) )
+			return MCS_FAIL;
 
-	h->cfg->setGroup(section);
-	if ( ! h->cfg->hasKey(key) )
-	  return MCS_FAIL;
+		h->cfg->setGroup(section);
+		if ( ! h->cfg->hasKey(key) )
+			return MCS_FAIL;
 
-	*value = h->cfg->readNumEntry(key);
+		*value = h->cfg->readNumEntry(key);
 
-	return MCS_OK;
-}
+		return MCS_OK;
+	}
 
-static mcs_response_t
-mcs_kconfig_get_bool(mcs_handle_t *self, const char *section,
-		     const char *key, int *value)
-{
-	mcs_kconfig_handle_t *h = (mcs_kconfig_handle_t *) self->mcs_priv_handle;
+	mcs_response_t
+	mcs_kconfig_get_bool(mcs_handle_t *self, const char *section,
+			     const char *key, int *value)
+	{
+		mcs_kconfig_handle_t *h = (mcs_kconfig_handle_t *) self->mcs_priv_handle;
 
-	if ( ! h->cfg->hasGroup(section) )
-	  return MCS_FAIL;
+		if ( ! h->cfg->hasGroup(section) )
+			return MCS_FAIL;
 
-	h->cfg->setGroup(section);
-	if ( ! h->cfg->hasKey(key) )
-	  return MCS_FAIL;
+		h->cfg->setGroup(section);
+		if ( ! h->cfg->hasKey(key) )
+			return MCS_FAIL;
 
-	*value = h->cfg->readBoolEntry(key);
+		*value = h->cfg->readBoolEntry(key);
 
-	return MCS_OK;
-}
+		return MCS_OK;
+	}
 
-static mcs_response_t
-mcs_kconfig_get_float(mcs_handle_t *self, const char *section,
-		      const char *key, float *value)
-{
-	mcs_kconfig_handle_t *h = (mcs_kconfig_handle_t *) self->mcs_priv_handle;
+	mcs_response_t
+	mcs_kconfig_get_float(mcs_handle_t *self, const char *section,
+			      const char *key, float *value)
+	{
+		mcs_kconfig_handle_t *h = (mcs_kconfig_handle_t *) self->mcs_priv_handle;
 
-	if ( ! h->cfg->hasGroup(section) )
-	  return MCS_FAIL;
+		if ( ! h->cfg->hasGroup(section) )
+			return MCS_FAIL;
 
-	h->cfg->setGroup(section);
-	if ( ! h->cfg->hasKey(key) )
-	  return MCS_FAIL;
+		h->cfg->setGroup(section);
+		if ( ! h->cfg->hasKey(key) )
+			return MCS_FAIL;
 
-	*value = (float)(h->cfg->readDoubleNumEntry(key));
+		*value = (float)(h->cfg->readDoubleNumEntry(key));
 
-	return MCS_OK;
-}
+		return MCS_OK;
+	}
 
-static mcs_response_t
-mcs_kconfig_get_double(mcs_handle_t *self, const char *section,
-		       const char *key, double *value)
-{
-	mcs_kconfig_handle_t *h = (mcs_kconfig_handle_t *) self->mcs_priv_handle;
+	mcs_response_t
+	mcs_kconfig_get_double(mcs_handle_t *self, const char *section,
+			       const char *key, double *value)
+	{
+		mcs_kconfig_handle_t *h = (mcs_kconfig_handle_t *) self->mcs_priv_handle;
 
-	if ( ! h->cfg->hasGroup(section) )
-	  return MCS_FAIL;
+		if ( ! h->cfg->hasGroup(section) )
+			return MCS_FAIL;
 
-	h->cfg->setGroup(section);
-	if ( ! h->cfg->hasKey(key) )
-	  return MCS_FAIL;
+		h->cfg->setGroup(section);
+		if ( ! h->cfg->hasKey(key) )
+			return MCS_FAIL;
 
-	*value = h->cfg->readDoubleNumEntry(key);
+		*value = h->cfg->readDoubleNumEntry(key);
 
-	return MCS_OK;
-}
+		return MCS_OK;
+	}
 
-static mcs_response_t
-mcs_kconfig_set_string(mcs_handle_t *self, const char *section,
-		       const char *key, const char *value)
-{
-	mcs_kconfig_handle_t *h = (mcs_kconfig_handle_t *) self->mcs_priv_handle;
+	mcs_response_t
+	mcs_kconfig_set_string(mcs_handle_t *self, const char *section,
+			       const char *key, const char *value)
+	{
+		mcs_kconfig_handle_t *h = (mcs_kconfig_handle_t *) self->mcs_priv_handle;
 
-	h->cfg->setGroup(section);
-	if ( ! value )
-	  h->cfg->writeEntry(key, QString::null);
-	else
-	  h->cfg->writeEntry(key, value);
+		h->cfg->setGroup(section);
+		if ( ! value )
+			h->cfg->writeEntry(key, QString::null);
+		else
+			h->cfg->writeEntry(key, value);
 
-	return MCS_OK;
-}
+		return MCS_OK;
+	}
 
-static mcs_response_t
-mcs_kconfig_set_int(mcs_handle_t *self, const char *section,
-		    const char *key, int value)
-{
-	mcs_kconfig_handle_t *h = (mcs_kconfig_handle_t *) self->mcs_priv_handle;
+	mcs_response_t
+	mcs_kconfig_set_int(mcs_handle_t *self, const char *section,
+			    const char *key, int value)
+	{
+		mcs_kconfig_handle_t *h = (mcs_kconfig_handle_t *) self->mcs_priv_handle;
 
-	h->cfg->setGroup(section);
-	h->cfg->writeEntry(key, value);
+		h->cfg->setGroup(section);
+		h->cfg->writeEntry(key, value);
 
-	return MCS_OK;
-}
+		return MCS_OK;
+	}
 
-static mcs_response_t
-mcs_kconfig_set_bool(mcs_handle_t *self, const char *section,
-		     const char *key, int value)
-{
-	mcs_kconfig_handle_t *h = (mcs_kconfig_handle_t *) self->mcs_priv_handle;
+	mcs_response_t
+	mcs_kconfig_set_bool(mcs_handle_t *self, const char *section,
+			     const char *key, int value)
+	{
+		mcs_kconfig_handle_t *h = (mcs_kconfig_handle_t *) self->mcs_priv_handle;
 
-	h->cfg->setGroup(section);
-	h->cfg->writeEntry(key, bool(value));
+		h->cfg->setGroup(section);
+		h->cfg->writeEntry(key, bool(value));
 
-	return MCS_OK;
-}
+		return MCS_OK;
+	}
 
-static mcs_response_t
-mcs_kconfig_set_float(mcs_handle_t *self, const char *section,
-		      const char *key, float value)
-{
-	mcs_kconfig_handle_t *h = (mcs_kconfig_handle_t *) self->mcs_priv_handle;
+	mcs_response_t
+	mcs_kconfig_set_float(mcs_handle_t *self, const char *section,
+			      const char *key, float value)
+	{
+		mcs_kconfig_handle_t *h = (mcs_kconfig_handle_t *) self->mcs_priv_handle;
 
-	h->cfg->setGroup(section);
-	h->cfg->writeEntry(key, value);
+		h->cfg->setGroup(section);
+		h->cfg->writeEntry(key, value);
 
-	return MCS_OK;
-}
+		return MCS_OK;
+	}
 
-static mcs_response_t
-mcs_kconfig_set_double(mcs_handle_t *self, const char *section,
-		       const char *key, double value)
-{
-	mcs_kconfig_handle_t *h = (mcs_kconfig_handle_t *) self->mcs_priv_handle;
+	mcs_response_t
+	mcs_kconfig_set_double(mcs_handle_t *self, const char *section,
+			       const char *key, double value)
+	{
+		mcs_kconfig_handle_t *h = (mcs_kconfig_handle_t *) self->mcs_priv_handle;
 
-	h->cfg->setGroup(section);
-	h->cfg->writeEntry(key, value);
+		h->cfg->setGroup(section);
+		h->cfg->writeEntry(key, value);
 
-	return MCS_OK;
-}
+		return MCS_OK;
+	}
 
-static mcs_response_t
-mcs_kconfig_unset_key(mcs_handle_t *self, const char *section,
-		      const char *key)
-{
-	mcs_kconfig_handle_t *h = (mcs_kconfig_handle_t *) self->mcs_priv_handle;
+	mcs_response_t
+	mcs_kconfig_unset_key(mcs_handle_t *self, const char *section,
+			      const char *key)
+	{
+		mcs_kconfig_handle_t *h = (mcs_kconfig_handle_t *) self->mcs_priv_handle;
 
-	h->cfg->deleteEntry(section, key);
+		h->cfg->deleteEntry(section, key);
 
-	return MCS_OK;
-}
+		return MCS_OK;
+	}
+
+};
 
 mcs_backend_t mcs_backend = {
 	NULL,
