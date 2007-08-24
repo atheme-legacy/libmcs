@@ -13,6 +13,6 @@ SOURCES = mcs_walk_config.c
 
 OBJECTS = ${SOURCES:.c=.o}
 
-mcs-info: $(OBJECTS)
+mcs-walk-config: $(OBJECTS)
 	$(CC) $(LDFLAGS) $(OBJECTS) $(LDADD) -o $@
 	@printf "%10s     %-20s\n" LINK $@
