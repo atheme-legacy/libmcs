@@ -8,7 +8,7 @@ OBJECTIVE_SONAME_SUFFIX = 1
 
 LIBADD += $(DYNAMIC_LD_LIBS)
 
-CFLAGS += $(PICFLAGS) -I.. -DPLUGIN_DIR=\"${libdir}/mcs\" -DMCS_SYSCONFDIR=\"${sysconfdir}\"
+CFLAGS += $(PICFLAGS) -I.. -DPLUGIN_DIR=\"${libdir}/mcs\" -D_MCS_CORE -DMCS_SYSCONFDIR=\"${sysconfdir}\"
 
 SOURCES = \
 	mcs_backends.c \
@@ -23,7 +23,7 @@ OBJECTS = ${SOURCES:.c=.o}
 
 INCLUDEDIR = ${prefix}/include/libmcs
 
-HEADERS = mcs.h mcs_config.h
+HEADERS = mcs.h
 
 include ../../mk/objective.mk
 

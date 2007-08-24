@@ -45,7 +45,9 @@
 #include <stdarg.h>
 #include <errno.h>
 
-#include <libmcs/mcs_config.h>
+#ifdef _MCS_CORE
+# include <libmcs/mcs_config.h>
+#endif
 
 typedef struct mcs_list_ {
 	struct mcs_list_ *prev;
