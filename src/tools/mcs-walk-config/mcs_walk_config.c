@@ -53,7 +53,7 @@ main(int argc, char *argv[])
 	{
 		mcs_list_t *keys, *i2;
 
-		printf("%s\n", (char *) i->data);
+		printf("\n%s\n", (char *) i->data);
 		keys = mcs_get_keys(h, i->data);
 
 		for (i2 = keys; i2 != NULL; i2 = i2->next)
