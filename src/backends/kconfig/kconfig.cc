@@ -2,6 +2,7 @@
  * This is mcs; a modular configuration system.
  *
  * Copyright (c) 2007 Diego Pettenò <flameeyes@gmail.com>
+ * Copyright (c) 2007 William Pitcock <nenolod@sacredspiral.co.uk>
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -252,6 +253,26 @@ namespace {
 	}
 
 	mcs_list_t *
+	mcs_kconfig_get_keys(mcs_handle_t *self, const char *section)
+	{
+		mcs_kconfig_handle_t *h = (mcs_kconfig_handle_t *) self->mcs_priv_handle;
+		mcs_list_t *out = NULL;
+
+		//  <key    , value  >
+		QMap<QString, QString> map = h->cfg->entryMap(section);
+
+		for (QMap<QString, QString>::const_iterator i = map.constBegin();
+			i != map.constEnd(); i++)
+		{
+			QString str = i.key();
+
+			out = mcs_list_append(out, strdup(str.local8Bit()));
+		}
+
+		return out;
+	}
+
+	mcs_list_t *
 	mcs_kconfig_get_groups(mcs_handle_t *self)
 	{
 		mcs_kconfig_handle_t *h = (mcs_kconfig_handle_t *) self->mcs_priv_handle;
@@ -291,6 +312,6 @@ mcs_backend_t mcs_backend = {
 
 	mcs_kconfig_unset_key,
 
-	NULL,
+	mcs_kconfig_get_keys,
 	mcs_kconfig_get_groups
 };
