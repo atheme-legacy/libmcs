@@ -298,7 +298,7 @@ mcs_list_t *
 mcs_gconf_get_keys(mcs_handle_t *self, const char *section)
 {
 	mcs_gconf_handle_t *h = (mcs_gconf_handle_t *) self->mcs_priv_handle;
-	mcs_list_t *out;
+	mcs_list_t *out = NULL;
 	GSList *pairs;
 	GError *error = NULL;
 
@@ -322,7 +322,7 @@ mcs_list_t *
 mcs_gconf_get_sections(mcs_handle_t *self)
 {
 	mcs_gconf_handle_t *h = (mcs_gconf_handle_t *) self->mcs_priv_handle;
-	mcs_list_t *out;
+	mcs_list_t *out = NULL;
 	GSList *pairs;
 	GError *error = NULL;
 
