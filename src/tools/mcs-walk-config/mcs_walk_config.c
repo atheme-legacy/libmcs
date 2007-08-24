@@ -36,7 +36,6 @@ int
 main(int argc, char *argv[])
 {
 	mcs_handle_t *h;
-	char *foo = NULL;
 	mcs_list_t *groups, *i;
 
 	if (argc < 2)
@@ -54,12 +53,12 @@ main(int argc, char *argv[])
 	{
 		mcs_list_t *keys, *i2;
 
-		printf("%s\n", i->data);
+		printf("%s\n", (char *) i->data);
 		keys = mcs_get_keys(h, i->data);
 
 		for (i2 = keys; i2 != NULL; i2 = i2->next)
 		{
-			printf("  %c-- %s", i2->next != NULL ? '|' : '`');
+			printf("  %c-- %s", i2->next != NULL ? '|' : '`', (char *) i2->data);
 			free(i2->data);
 		}
 
