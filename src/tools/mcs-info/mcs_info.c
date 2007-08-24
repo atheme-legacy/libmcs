@@ -35,7 +35,6 @@
 int
 main(int argc, char *argv[])
 {
-	mcs_handle_t *h;
 	mcs_list_t *l;
 	char *ver;
 
