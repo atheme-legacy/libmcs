@@ -37,6 +37,7 @@ main(int argc, char *argv[])
 {
 	mcs_handle_t *h;
 	mcs_list_t *groups, *i;
+	int entries = 0, sections = 0;
 
 	if (argc < 2)
 	{
@@ -60,14 +61,21 @@ main(int argc, char *argv[])
 		{
 			printf("  %c-- %s\n", i2->next != NULL ? '|' : '`', (char *) i2->data);
 			free(i2->data);
+
+			entries++;
 		}
 
 		mcs_list_free(keys);
 		free(i->data);
+
+		sections++;
 	}
 
 	mcs_list_free(groups);
 	mcs_fini();
+
+	printf("\n%d entries across %d groups, average %d entries per group\n",
+		entries, sections, entries / sections);
 
 	return 0;
 }
