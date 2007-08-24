@@ -58,7 +58,7 @@ main(int argc, char *argv[])
 
 		for (i2 = keys; i2 != NULL; i2 = i2->next)
 		{
-			printf("  %c-- %s", i2->next != NULL ? '|' : '`', (char *) i2->data);
+			printf("  %c-- %s\n", i2->next != NULL ? '|' : '`', (char *) i2->data);
 			free(i2->data);
 		}
 
