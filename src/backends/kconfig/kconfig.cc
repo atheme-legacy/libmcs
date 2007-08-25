@@ -41,13 +41,16 @@ extern "C" {
 }
 
 /* Work around a stupid Qt3 namespace bug. */
-#undef FALSE
-#undef TRUE
+#define FALSE QT3_FALSE
+#define TRUE QT3_TRUE
 
 #include <kconfig.h>
 #include <kapplication.h>
 #include <kcmdlineargs.h>
 #include <assert.h>
+
+#undef FALSE
+#undef TRUE
 
 typedef struct {
 	KConfig *cfg;
