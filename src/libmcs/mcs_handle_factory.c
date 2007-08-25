@@ -36,6 +36,22 @@ mowgli_queue_t *mcs_backends_lst = NULL;
 
 /* ******************************************************************* */
 
+static mowgli_object_class_t klass;
+
+static void
+mcs_handle_destroy(mcs_handle_t *self)
+{
+	self->base->mcs_destroy(self);
+}
+
+void
+mcs_handle_class_init(void)
+{
+	mowgli_object_class_init(&klass, "mcs.handle", mcs_handle_destroy, FALSE);
+}
+
+/* ******************************************************************* */
+
 mcs_handle_t *
 mcs_new(char *domain)
 {
@@ -50,7 +66,12 @@ mcs_new(char *domain)
 		mcs_backend_t *b = (mcs_backend_t *) n->data;
 
 		if (!strcmp(b->name, magic))
-			return b->mcs_new(domain);
+		{
+			mcs_handle_t *out = b->mcs_new(domain);
+			mowgli_object_init(mowgli_object(out), NULL, &klass, NULL);
+
+			return out;
+		}
 	}
 
 	return NULL;
@@ -59,7 +80,8 @@ mcs_new(char *domain)
 void
 mcs_destroy(mcs_handle_t *self)
 {
-	return self->base->mcs_destroy(self);
+	mcs_log("mcs_destroy() is deprecated as of version 0.6, use mowgli_object_unref() instead!");
+	mowgli_object_unref(self);
 }
 
 /* ******************************************************************* */

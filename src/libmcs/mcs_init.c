@@ -39,6 +39,7 @@ mcs_init(void)
 {
 	mowgli_init();
 
+	mcs_handle_class_init();
 	mcs_load_plugins();
 }
 

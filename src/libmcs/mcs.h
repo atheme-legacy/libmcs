@@ -131,6 +131,7 @@ typedef struct {
 } mcs_backend_t;
 
 struct mcs_handle_ {
+	mowgli_object_t object;
 	mcs_backend_t *base;
 	void *mcs_priv_handle;
 };
@@ -142,6 +143,7 @@ struct mcs_handle_ {
 extern void  mcs_init(void);
 extern void  mcs_fini(void);
 extern char *mcs_version(void);
+extern void  mcs_handle_class_init(void);
  
 /*
  * These functions have to do with registration of MCS backends.
