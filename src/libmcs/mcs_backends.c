@@ -37,7 +37,7 @@ extern mcs_list_t *mcs_backends_lst;
 mcs_response_t
 mcs_backend_register(mcs_backend_t *b)
 {
-	mcs_backends_lst = mcs_list_append(mcs_backends_lst, b);
+	mcs_backends_lst = mowgli_queue_append(mcs_backends_lst, b);
 
 	return MCS_OK;
 }
@@ -46,7 +46,7 @@ mcs_backend_register(mcs_backend_t *b)
 mcs_response_t
 mcs_backend_unregister(mcs_backend_t *b)
 {
-	mcs_backends_lst = mcs_list_remove_data(mcs_backends_lst, b);
+	mcs_backends_lst = mowgli_queue_remove_data(mcs_backends_lst, b);
 
 	return MCS_OK;
 }

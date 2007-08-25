@@ -45,15 +45,13 @@
 #include <stdarg.h>
 #include <errno.h>
 
+#include <mowgli.h>
+
 #ifdef _MCS_CORE
 # include <libmcs/mcs_config.h>
 #endif
 
-typedef struct mcs_list_ {
-	struct mcs_list_ *prev;
-	struct mcs_list_ *next;
-	void *data;
-} mcs_list_t;
+typedef mowgli_queue_t mcs_list_t __attribute__((deprecated));
 
 typedef enum {
 	MCS_FAIL, MCS_OK
@@ -236,15 +234,6 @@ extern mcs_list_t *mcs_get_sections(mcs_handle_t *handle);
  */
 extern void mcs_load_plugins(void);
 extern void mcs_unload_plugins(mcs_list_t *l);
-
-/*
- * These functions manipulate linked lists.
- */
-extern mcs_list_t *mcs_list_append(mcs_list_t *head, void *data);
-extern mcs_list_t *mcs_list_remove(mcs_list_t *head);
-extern mcs_list_t *mcs_list_find(mcs_list_t *head, void *data);
-extern mcs_list_t *mcs_list_remove_data(mcs_list_t *head, void *data);
-extern void mcs_list_free(mcs_list_t *head);
 
 /*
  * These functions have to do with logging.
