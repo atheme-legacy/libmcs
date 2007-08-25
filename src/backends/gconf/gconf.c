@@ -294,11 +294,11 @@ mcs_gconf_unset_key(mcs_handle_t *self, const char *section,
 	return MCS_OK;
 }
 
-mcs_list_t *
+mowgli_queue_t *
 mcs_gconf_get_keys(mcs_handle_t *self, const char *section)
 {
 	mcs_gconf_handle_t *h = (mcs_gconf_handle_t *) self->mcs_priv_handle;
-	mcs_list_t *out = NULL;
+	mowgli_queue_t *out = NULL;
 	GSList *pairs;
 	GError *error = NULL;
 
@@ -308,7 +308,7 @@ mcs_gconf_get_keys(mcs_handle_t *self, const char *section)
 	{
 		GConfEntry *val = (GConfEntry *) pairs->data;
 
-		out = mcs_list_append(out, strdup(val->key));
+		out = mowgli_queue_append(out, strdup(val->key));
 
 		gconf_entry_free(val);
 	}
@@ -318,11 +318,11 @@ mcs_gconf_get_keys(mcs_handle_t *self, const char *section)
 	return out;
 }
 
-mcs_list_t *
+mowgli_queue_t *
 mcs_gconf_get_sections(mcs_handle_t *self)
 {
 	mcs_gconf_handle_t *h = (mcs_gconf_handle_t *) self->mcs_priv_handle;
-	mcs_list_t *out = NULL;
+	mowgli_queue_t *out = NULL;
 	GSList *pairs;
 	GError *error = NULL;
 
@@ -332,7 +332,7 @@ mcs_gconf_get_sections(mcs_handle_t *self)
 	{
 		gchar *val = (gchar *) pairs->data;
 
-		out = mcs_list_append(out, strdup(val));
+		out = mowgli_queue_append(out, strdup(val));
 
 		g_free(val);
 	}
