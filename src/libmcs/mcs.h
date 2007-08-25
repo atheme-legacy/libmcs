@@ -51,8 +51,6 @@
 # include <libmcs/mcs_config.h>
 #endif
 
-typedef mowgli_queue_t mcs_list_t;
-
 typedef enum {
 	MCS_FAIL, MCS_OK
 } mcs_response_t;
@@ -125,11 +123,11 @@ typedef struct {
 					const char *key);
 
 	/* key request */
-	mcs_list_t *(*mcs_get_keys)(mcs_handle_t *handle,
+	mowgli_queue_t *(*mcs_get_keys)(mcs_handle_t *handle,
 				    const char *section);
 
 	/* sections request */
-	mcs_list_t *(*mcs_get_sections)(mcs_handle_t *handle);
+	mowgli_queue_t *(*mcs_get_sections)(mcs_handle_t *handle);
 } mcs_backend_t;
 
 struct mcs_handle_ {
@@ -150,7 +148,7 @@ extern char *mcs_version(void);
  */
 extern mcs_response_t mcs_backend_register(mcs_backend_t *backend);
 extern mcs_response_t mcs_backend_unregister(mcs_backend_t *backend);
-extern mcs_list_t *   mcs_backend_get_list(void);
+extern mowgli_queue_t *   mcs_backend_get_list(void);
 extern char *         mcs_backend_select(void);
 
 /*
@@ -224,16 +222,16 @@ extern mcs_response_t mcs_unset_key(mcs_handle_t *handle,
 				const char *key);
 
 /* key request */
-extern mcs_list_t *mcs_get_keys(mcs_handle_t *handle,
+extern mowgli_queue_t *mcs_get_keys(mcs_handle_t *handle,
 				const char *section);
 
-extern mcs_list_t *mcs_get_sections(mcs_handle_t *handle);
+extern mowgli_queue_t *mcs_get_sections(mcs_handle_t *handle);
 
 /*
  * These functions have to do with the plugin loader.
  */
 extern void mcs_load_plugins(void);
-extern void mcs_unload_plugins(mcs_list_t *l);
+extern void mcs_unload_plugins(mowgli_queue_t *l);
 
 /*
  * These functions have to do with logging.

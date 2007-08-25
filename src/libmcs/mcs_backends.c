@@ -32,7 +32,7 @@
 
 #include "libmcs/mcs.h"
 
-extern mcs_list_t *mcs_backends_lst;
+extern mowgli_queue_t *mcs_backends_lst;
 
 mcs_response_t
 mcs_backend_register(mcs_backend_t *b)
@@ -51,7 +51,7 @@ mcs_backend_unregister(mcs_backend_t *b)
 	return MCS_OK;
 }
 
-mcs_list_t *
+mowgli_queue_t *
 mcs_backend_get_list(void)
 {
 	return mcs_backends_lst;
@@ -63,7 +63,7 @@ mcs_backend_select(void)
 	char *env = getenv("MCS_BACKEND");
 	char buf[1024];
 	FILE *f;
-	mcs_list_t *l;
+	mowgli_queue_t *l;
 	char *tptr;
 
 	if (env != NULL)

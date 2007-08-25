@@ -32,14 +32,14 @@
 
 #include "libmcs/mcs.h"
 
-mcs_list_t *mcs_backends_lst = NULL;
+mowgli_queue_t *mcs_backends_lst = NULL;
 
 /* ******************************************************************* */
 
 mcs_handle_t *
 mcs_new(char *domain)
 {
-	mcs_list_t *n;
+	mowgli_queue_t *n;
 	char *magic = mcs_backend_select();
 
 	if (magic == NULL)
@@ -168,7 +168,7 @@ mcs_unset_key(mcs_handle_t *self,
 
 /* ******************************************************************* */
 
-mcs_list_t *
+mowgli_queue_t *
 mcs_get_keys(mcs_handle_t *self,
 	     const char *section)
 {
@@ -177,7 +177,7 @@ mcs_get_keys(mcs_handle_t *self,
 
 /* ******************************************************************* */
 
-mcs_list_t *
+mowgli_queue_t *
 mcs_get_sections(mcs_handle_t *self)
 {
 	return self->base->mcs_get_sections(self);

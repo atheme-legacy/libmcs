@@ -87,9 +87,9 @@ mcs_load_plugins(void)
  * Unloads a given list of plugins.
  */
 void
-mcs_unload_plugins(mcs_list_t *pl)
+mcs_unload_plugins(mowgli_queue_t *pl)
 {
-	mcs_list_t *n;
+	mowgli_queue_t *n;
 
 	for (n = pl; n != NULL; n = n->next)
 	{

@@ -32,7 +32,7 @@
 
 #include "libmcs/mcs.h"
 
-extern mcs_list_t *mcs_backends_lst;
+extern mowgli_queue_t *mcs_backends_lst;
 
 void
 mcs_init(void)
