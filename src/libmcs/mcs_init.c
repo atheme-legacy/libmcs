@@ -37,6 +37,8 @@ extern mcs_list_t *mcs_backends_lst;
 void
 mcs_init(void)
 {
+	mowgli_init();
+
 	mcs_load_plugins();
 }
 
