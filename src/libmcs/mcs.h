@@ -51,7 +51,7 @@
 # include <libmcs/mcs_config.h>
 #endif
 
-typedef mowgli_queue_t mcs_list_t __attribute__((deprecated));
+typedef mowgli_queue_t mcs_list_t;
 
 typedef enum {
 	MCS_FAIL, MCS_OK
