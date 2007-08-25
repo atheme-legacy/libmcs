@@ -35,7 +35,7 @@
 static void 
 mcs_log_dummy(const char *unused)
 {
-	/* do nothing. */
+	mowgli_log(unused);
 }
 
 static mcs_log_func_t mcs_logger = mcs_log_dummy;
