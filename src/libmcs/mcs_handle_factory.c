@@ -44,6 +44,9 @@ mcs_handle_destroy(mcs_handle_t *self)
 	self->base->mcs_destroy(self);
 }
 
+/**
+ * \brief Initialises the mowgli.object.class for the mcs.handle object.
+ */
 void
 mcs_handle_class_init(void)
 {
@@ -77,6 +80,12 @@ mcs_new(char *domain)
 	return NULL;
 }
 
+/**
+ * \brief Destroys an mcs.handle object.
+ *
+ * This function is considered deprecated since version 0.6. It should 
+ * not be used in any newly written code.
+ */
 void
 mcs_destroy(mcs_handle_t *self)
 {
@@ -85,6 +94,20 @@ mcs_destroy(mcs_handle_t *self)
 
 /* ******************************************************************* */
 
+/**
+ * \brief Public function to retrieve a string value from a configuration database.
+ *
+ * This function is the public interface for retrieving a string value from
+ * a configuration database via a configuration backend class.
+ *
+ * \param self The mcs.handle object that represents the configuration database.
+ * \param section The section to look in.
+ * \param key The key to look up.
+ * \param value A memory location to put the value in.
+ *
+ * \return A mcs_response_t value representing the success or failure of 
+ *         the transaction.
+ */
 mcs_response_t
 mcs_get_string(mcs_handle_t *self,
 	       const char *section,
@@ -94,6 +117,21 @@ mcs_get_string(mcs_handle_t *self,
 	return self->base->mcs_get_string(self, section, key, value);
 }
 
+/**
+ * \brief Public function to retrieve an integer value from a 
+ *        configuration database.
+ *
+ * This function is the public interface for retrieving an integer value from
+ * a configuration database via a configuration backend class.
+ *
+ * \param self The mcs.handle object that represents the configuration database.
+ * \param section The section to look in.
+ * \param key The key to look up.
+ * \param value A memory location to put the value in.
+ *
+ * \return A mcs_response_t value representing the success or failure of 
+ *         the transaction.
+ */
 mcs_response_t
 mcs_get_int(mcs_handle_t *self,
 	    const char *section,
@@ -103,6 +141,21 @@ mcs_get_int(mcs_handle_t *self,
 	return self->base->mcs_get_int(self, section, key, value);
 }
 
+/**
+ * \brief Public function to retrieve a boolean value from a 
+ *        configuration database.
+ *
+ * This function is the public interface for retrieving a boolean value from
+ * a configuration database via a configuration backend class.
+ *
+ * \param self The mcs.handle object that represents the configuration database.
+ * \param section The section to look in.
+ * \param key The key to look up.
+ * \param value A memory location to put the value in.
+ *
+ * \return A mcs_response_t value representing the success or failure of 
+ *         the transaction.
+ */
 mcs_response_t
 mcs_get_bool(mcs_handle_t *self,
 	     const char *section,
@@ -112,6 +165,21 @@ mcs_get_bool(mcs_handle_t *self,
 	return self->base->mcs_get_bool(self, section, key, value);
 }
 
+/**
+ * \brief Public function to retrieve a floating point value from a 
+ *        configuration database.
+ *
+ * This function is the public interface for retrieving a float value from
+ * a configuration database via a configuration backend class.
+ *
+ * \param self The mcs.handle object that represents the configuration database.
+ * \param section The section to look in.
+ * \param key The key to look up.
+ * \param value A memory location to put the value in.
+ *
+ * \return A mcs_response_t value representing the success or failure of 
+ *         the transaction.
+ */
 mcs_response_t
 mcs_get_float(mcs_handle_t *self,
 	      const char *section,
@@ -121,6 +189,21 @@ mcs_get_float(mcs_handle_t *self,
 	return self->base->mcs_get_float(self, section, key, value);
 }
 
+/**
+ * \brief Public function to retrieve a double-precision floating point 
+ *        value from a configuration database.
+ *
+ * This function is the public interface for retrieving a double value from
+ * a configuration database via a configuration backend class.
+ *
+ * \param self The mcs.handle object that represents the configuration database.
+ * \param section The section to look in.
+ * \param key The key to look up.
+ * \param value A memory location to put the value in.
+ *
+ * \return A mcs_response_t value representing the success or failure of 
+ *         the transaction.
+ */
 mcs_response_t
 mcs_get_double(mcs_handle_t *self,
 	       const char *section,
@@ -132,6 +215,20 @@ mcs_get_double(mcs_handle_t *self,
 
 /* ******************************************************************* */
 
+/**
+ * \brief Public function to set a string value in a configuration database.
+ *
+ * This function is the public interface for setting a string value in
+ * a configuration database via a configuration backend class.
+ *
+ * \param self The mcs.handle object that represents the configuration database.
+ * \param section The section to set the value in.
+ * \param key The key to set.
+ * \param value The value to set.
+ *
+ * \return A mcs_response_t value representing the success or failure of 
+ *         the transaction.
+ */
 mcs_response_t
 mcs_set_string(mcs_handle_t *self,
 	       const char *section,
@@ -141,6 +238,20 @@ mcs_set_string(mcs_handle_t *self,
 	return self->base->mcs_set_string(self, section, key, value);
 }
 
+/**
+ * \brief Public function to set an integer value in a configuration database.
+ *
+ * This function is the public interface for setting an integer value in
+ * a configuration database via a configuration backend class.
+ *
+ * \param self The mcs.handle object that represents the configuration database.
+ * \param section The section to set the value in.
+ * \param key The key to set.
+ * \param value The value to set.
+ *
+ * \return A mcs_response_t value representing the success or failure of 
+ *         the transaction.
+ */
 mcs_response_t
 mcs_set_int(mcs_handle_t *self,
 	    const char *section,
@@ -150,6 +261,20 @@ mcs_set_int(mcs_handle_t *self,
 	return self->base->mcs_set_int(self, section, key, value);
 }
 
+/**
+ * \brief Public function to set a boolean value in a configuration database.
+ *
+ * This function is the public interface for boolean a string value in
+ * a configuration database via a configuration backend class.
+ *
+ * \param self The mcs.handle object that represents the configuration database.
+ * \param section The section to set the value in.
+ * \param key The key to set.
+ * \param value The value to set.
+ *
+ * \return A mcs_response_t value representing the success or failure of 
+ *         the transaction.
+ */
 mcs_response_t
 mcs_set_bool(mcs_handle_t *self,
 	     const char *section,
@@ -159,6 +284,20 @@ mcs_set_bool(mcs_handle_t *self,
 	return self->base->mcs_set_bool(self, section, key, value);
 }
 
+/**
+ * \brief Public function to set a floating point value in a configuration database.
+ *
+ * This function is the public interface for setting a float value in
+ * a configuration database via a configuration backend class.
+ *
+ * \param self The mcs.handle object that represents the configuration database.
+ * \param section The section to set the value in.
+ * \param key The key to set.
+ * \param value The value to set.
+ *
+ * \return A mcs_response_t value representing the success or failure of 
+ *         the transaction.
+ */
 mcs_response_t
 mcs_set_float(mcs_handle_t *self,
 	      const char *section,
@@ -168,6 +307,21 @@ mcs_set_float(mcs_handle_t *self,
 	return self->base->mcs_set_float(self, section, key, value);
 }
 
+/**
+ * \brief Public function to set a double-precision floating point value
+ *        in a configuration database.
+ *
+ * This function is the public interface for setting a double value in
+ * a configuration database via a configuration backend class.
+ *
+ * \param self The mcs.handle object that represents the configuration database.
+ * \param section The section to set the value in.
+ * \param key The key to set.
+ * \param value The value to set.
+ *
+ * \return A mcs_response_t value representing the success or failure of 
+ *         the transaction.
+ */
 mcs_response_t
 mcs_set_double(mcs_handle_t *self,
 	       const char *section,
@@ -179,6 +333,19 @@ mcs_set_double(mcs_handle_t *self,
 
 /* ******************************************************************* */
 
+/**
+ * \brief Public function to remove a value from a configuration database.
+ *
+ * This function is the public interface for removing a value from
+ * a configuration database via a configuration backend class.
+ *
+ * \param self The mcs.handle object that represents the configuration database.
+ * \param section The section to unset the value in.
+ * \param key The key to unset.
+ *
+ * \return A mcs_response_t value representing the success or failure of 
+ *         the transaction.
+ */
 mcs_response_t
 mcs_unset_key(mcs_handle_t *self,
 	      const char *section,
@@ -189,6 +356,18 @@ mcs_unset_key(mcs_handle_t *self,
 
 /* ******************************************************************* */
 
+/**
+ * \brief Public function to retrieve a mowgli.queue of keys from a
+ *        configuration database.
+ *
+ * This function is the public interface for retrieving a mowgli.queue of
+ * keys from a configuration database via a configuration backend class.
+ *
+ * \param self The mcs.handle object that represents the configuration database.
+ * \param section The section to search.
+ *
+ * \return A mowgli.queue of key names in the requested section.
+ */
 mowgli_queue_t *
 mcs_get_keys(mcs_handle_t *self,
 	     const char *section)
@@ -198,6 +377,17 @@ mcs_get_keys(mcs_handle_t *self,
 
 /* ******************************************************************* */
 
+/**
+ * \brief Public function to retrieve a mowgli.queue of sections from a
+ *        configuration database.
+ *
+ * This function is the public interface for retrieving a mowgli.queue of
+ * sections from a configuration database via a configuration backend class.
+ *
+ * \param self The mcs.handle object that represents the configuration database.
+ *
+ * \return A mowgli.queue of section names in the requested section.
+ */
 mowgli_queue_t *
 mcs_get_sections(mcs_handle_t *self)
 {

@@ -34,6 +34,17 @@
 
 extern mowgli_queue_t *mcs_backends_lst;
 
+/**
+ * \brief Registers a custom mcs.backend.
+ *
+ * This is used to register a named mcs.backend vtable with mcs.
+ * This should be unregistered with mcs_backend_unregister() when it is
+ * no longer needed, such as during an application unload.
+ *
+ * \param b An mcs.backend vtable to register.
+ * \return A mcs_response_t code depending on success or failure of the
+ *         registration.
+ */
 mcs_response_t
 mcs_backend_register(mcs_backend_t *b)
 {
@@ -42,7 +53,17 @@ mcs_backend_register(mcs_backend_t *b)
 	return MCS_OK;
 }
 
-/* TODO: actually do something here */
+/**
+ * \brief Unregisters a custom mcs.backend.
+ *
+ * This is used to unregister a named mcs.backend vtable with mcs.
+ * This should be called when you are no longer interested in using the
+ * backend implementation with mcs.
+ *
+ * \param b An mcs.backend vtable to register.
+ * \return A mcs_response_t code depending on success or failure of the
+ *         deregistration.
+ */
 mcs_response_t
 mcs_backend_unregister(mcs_backend_t *b)
 {
@@ -51,12 +72,28 @@ mcs_backend_unregister(mcs_backend_t *b)
 	return MCS_OK;
 }
 
+/**
+ * \brief Returns a mowgli.queue representing the backends list.
+ *
+ * This is the portable version of using the mcs_backends_lst symbol.
+ *
+ * \return A mowgli.queue representing the backend list.
+ */
 mowgli_queue_t *
 mcs_backend_get_list(void)
 {
 	return mcs_backends_lst;
 }
 
+/**
+ * \brief Determines the backend that should be used.
+ *
+ * This function checks the environment variable, MCS_BACKEND first. If 
+ * that is empty, it checks $HOME/.mcs-backend, followed by 
+ * /etc/mcs-backend. If no preference is found, it returns "default".
+ *
+ * \return The name of the backend that should be used.
+ */
 char *
 mcs_backend_select(void)
 {

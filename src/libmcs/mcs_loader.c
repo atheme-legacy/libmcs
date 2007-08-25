@@ -32,10 +32,8 @@
 
 #include "libmcs/mcs.h"
 
-/*
- * mcs_load_plugins
- *
- * Loads all of the plugins in -DPLUGIN_DIR.
+/**
+ * \brief Loads all of the plugins in -DPLUGIN_DIR.
  */
 void
 mcs_load_plugins(void)
@@ -81,10 +79,10 @@ mcs_load_plugins(void)
         closedir(pl_dir);
 }
 
-/*
- * mcs_close_plugins
+/**
+ * \brief Unloads a given list of plugins.
  *
- * Unloads a given list of plugins.
+ * \param pl A mowgli.queue representing a list of plugins to unload.
  */
 void
 mcs_unload_plugins(mowgli_queue_t *pl)

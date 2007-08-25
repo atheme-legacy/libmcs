@@ -32,6 +32,15 @@
 
 #include "libmcs/mcs.h"
 
+/**
+ * \brief Determines the length of a string, limited by an arbitrary length.
+ *
+ * This is a function which is useful for limiting the length of a string.
+ *
+ * \param str The string to test.
+ * \param len The maximum allowed length of the string.
+ * \return The length of the string or len, whichever is smaller.
+ */
 size_t
 mcs_strnlen(const char *str, size_t len)
 {
@@ -40,6 +49,15 @@ mcs_strnlen(const char *str, size_t len)
 	return end != NULL ? (size_t) (end - str) : len;
 }
 
+/**
+ * \brief Duplicates a string, limited to a specific length.
+ *
+ * This is a function which duplicates a string limited to a maximum length.
+ *
+ * \param str The string to duplicate.
+ * \param len The maximum allowed length of the string.
+ * \return The length of the string or len, whichever is smaller.
+ */
 char *
 mcs_strndup(const char *str, size_t len)
 {
@@ -55,6 +73,16 @@ mcs_strndup(const char *str, size_t len)
 	return out;
 }
 
+/**
+ * \brief A utility function which creates a directory.
+ *
+ * This function creates a directory. It recurses to handle any parents
+ * which also need to be created.
+ *
+ * \param path The path to create.
+ * \param mode The mode of the directory that should be created.
+ * \return 0 on success, -1 on failure.
+ */
 int
 mcs_create_directory(const char *path, mode_t mode)
 {
@@ -96,6 +124,16 @@ mcs_create_directory(const char *path, mode_t mode)
 	return 0;
 }
 
+/**
+ * \brief Concatenates a string, limited to a maximum buffer size.
+ *
+ * This is a function which is useful for safely copying a string.
+ *
+ * \param dest The string to copy to.
+ * \param src The string to copy from.
+ * \param count The maximum allowed length of the string.
+ * \return The length of the new string.
+ */
 size_t mcs_strlcat(char *dest, const char *src, size_t count)
 {
 	size_t dsize = strlen(dest);
@@ -114,6 +152,16 @@ size_t mcs_strlcat(char *dest, const char *src, size_t count)
 	return res;
 }
 
+/**
+ * \brief Copies a string, limited to a maximum buffer size.
+ *
+ * This is a function which is useful for safely copying a string.
+ *
+ * \param dest The string to copy to.
+ * \param src The string to copy from.
+ * \param size The maximum allowed length of the string.
+ * \return The length of the new string.
+ */
 size_t mcs_strlcpy(char *dest, const char *src, size_t size)
 {
 	size_t ret = strlen(src);

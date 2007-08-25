@@ -32,8 +32,23 @@
 
 #include "libmcs/mcs.h"
 
+/**
+ * \brief A list of registered backends.
+ *
+ * This is a list of registered backends. It is not part of the public API.
+ */
 extern mowgli_queue_t *mcs_backends_lst;
 
+/**
+ * \brief Initialises the mcs library classes and loads the backend plugins.
+ *
+ * mcs_init() initialises mowgli.object, followed by all of the mcs 
+ * library classes which extend mowgli.object to provide an extensible
+ * configuration management system.
+ *
+ * Once the library mowgli.object classes have been initialised, the mcs
+ * plugin directory is iterated and various backend plugins are loaded.
+ */
 void
 mcs_init(void)
 {
@@ -43,12 +58,27 @@ mcs_init(void)
 	mcs_load_plugins();
 }
 
+/**
+ * \brief Releases resources used by the mcs backend plugins.
+ *
+ * This function unloads and releases resources used by the mcs backend 
+ * plugins.
+ */
 void
 mcs_fini(void)
 {
 	mcs_unload_plugins(mcs_backends_lst);
 }
 
+/**
+ * \brief Retrieves the version of the mcs implementation.
+ *
+ * This function is useful for displaying the version of the system 
+ * implementation.
+ *
+ * \return A dynamically allocated string containing the mcs implementation.
+ *         This should be used with free().
+ */
 char *
 mcs_version(void)
 {
