@@ -71,6 +71,7 @@ main(int argc, char *argv[])
 		sections++;
 	}
 
+	mcs_destroy(h);
 	mowgli_queue_destroy(groups);
 	mcs_fini();
 
