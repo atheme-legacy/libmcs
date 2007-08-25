@@ -308,7 +308,7 @@ mcs_gconf_get_keys(mcs_handle_t *self, const char *section)
 	{
 		GConfEntry *val = (GConfEntry *) pairs->data;
 
-		out = mowgli_queue_append(out, strdup(val->key));
+		out = mowgli_queue_push(out, strdup(val->key));
 
 		gconf_entry_free(val);
 	}
@@ -332,7 +332,7 @@ mcs_gconf_get_sections(mcs_handle_t *self)
 	{
 		gchar *val = (gchar *) pairs->data;
 
-		out = mowgli_queue_append(out, strdup(val));
+		out = mowgli_queue_push(out, strdup(val));
 
 		g_free(val);
 	}

@@ -77,7 +77,7 @@ keyfile_create_section(keyfile_t *parent, const char *name)
 	keyfile_section_t *out = calloc(sizeof(keyfile_section_t), 1);
 
 	out->name = strdup(name);
-	parent->sections = mowgli_queue_append(parent->sections, out);
+	parent->sections = mowgli_queue_push(parent->sections, out);
 
 	return out;
 }
@@ -113,7 +113,7 @@ keyfile_create_line(keyfile_section_t *parent, const char *key,
 	if (value != NULL)
 		out->value = strdup(value);
 
-	parent->lines = mowgli_queue_append(parent->lines, out);
+	parent->lines = mowgli_queue_push(parent->lines, out);
 
 	return out;
 }
@@ -567,7 +567,7 @@ mcs_keyfile_get_keys(mcs_handle_t *self, const char *section)
 	{
 		keyfile_line_t *kl = (keyfile_line_t *) iter->data;
 
-		out = mowgli_queue_append(out, strdup(kl->key));
+		out = mowgli_queue_push(out, strdup(kl->key));
 	}
 
 	return out;
@@ -583,7 +583,7 @@ mcs_keyfile_get_sections(mcs_handle_t *self)
 	{
 		keyfile_section_t *ks = (keyfile_section_t *) iter->data;
 
-		out = mowgli_queue_append(out, strdup(ks->name));
+		out = mowgli_queue_push(out, strdup(ks->name));
 	}
 
 	return out;
