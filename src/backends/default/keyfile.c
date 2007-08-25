@@ -44,7 +44,7 @@ keyfile_destroy(keyfile_t *file)
 {
 	keyfile_section_t *sec;
 	keyfile_line_t *line;
-	mcs_list_t *n, *n2;
+	mowgli_queue_t *n, *n2;
 
 	if (file == NULL)
 		return;
@@ -63,11 +63,11 @@ keyfile_destroy(keyfile_t *file)
 			free(line);
 		}
 
-		mcs_list_free(sec->lines);
+		mowgli_queue_destroy(sec->lines);
 		free(sec);
 	}
 
-	mcs_list_free(file->sections);
+	mowgli_queue_destroy(file->sections);
 	free(file);
 }
 
@@ -77,7 +77,7 @@ keyfile_create_section(keyfile_t *parent, const char *name)
 	keyfile_section_t *out = calloc(sizeof(keyfile_section_t), 1);
 
 	out->name = strdup(name);
-	parent->sections = mcs_list_append(parent->sections, out);
+	parent->sections = mowgli_queue_append(parent->sections, out);
 
 	return out;
 }
@@ -85,7 +85,7 @@ keyfile_create_section(keyfile_t *parent, const char *name)
 static keyfile_section_t *
 keyfile_locate_section(keyfile_t *parent, const char *name)
 {
-	mcs_list_t *n;
+	mowgli_queue_t *n;
 	keyfile_section_t *out;
 
 	for (n = parent->sections; n != NULL; n = n->next)
@@ -113,7 +113,7 @@ keyfile_create_line(keyfile_section_t *parent, const char *key,
 	if (value != NULL)
 		out->value = strdup(value);
 
-	parent->lines = mcs_list_append(parent->lines, out);
+	parent->lines = mowgli_queue_append(parent->lines, out);
 
 	return out;
 }
@@ -121,7 +121,7 @@ keyfile_create_line(keyfile_section_t *parent, const char *key,
 static keyfile_line_t *
 keyfile_locate_line(keyfile_section_t *parent, const char *key)
 {
-	mcs_list_t *n;
+	mowgli_queue_t *n;
 	keyfile_line_t *out;
 
 	for (n = parent->lines; n != NULL; n = n->next)
@@ -178,7 +178,7 @@ mcs_response_t
 keyfile_write(keyfile_t *self, const char *filename)
 {
 	FILE *f = fopen(filename, "w");
-	mcs_list_t *n, *n2;
+	mowgli_queue_t *n, *n2;
 	keyfile_section_t *sec;
 	keyfile_line_t *line;
 
@@ -394,8 +394,7 @@ keyfile_unset_key(keyfile_t *self, const char *section,
 			free(line->key);
 			free(line->value);
 
-			// XXX this one isnt right, we need mcs_list_remove_data
-			sec->lines = mcs_list_remove_data(sec->lines, line);
+			sec->lines = mowgli_queue_remove_data(sec->lines, line);
 
 			free(line);
 		}
@@ -554,12 +553,12 @@ mcs_keyfile_unset_key(mcs_handle_t *self, const char *section,
 	return keyfile_unset_key(h->kf, section, key);
 }
 
-mcs_list_t *
+mowgli_queue_t *
 mcs_keyfile_get_keys(mcs_handle_t *self, const char *section)
 {
 	mcs_keyfile_handle_t *h = (mcs_keyfile_handle_t *) self->mcs_priv_handle;
 	keyfile_section_t *ks = keyfile_locate_section(h->kf, section);
-	mcs_list_t *out = NULL, *iter;
+	mowgli_queue_t *out = NULL, *iter;
 
 	if (ks == NULL)
 		return NULL;
@@ -568,23 +567,23 @@ mcs_keyfile_get_keys(mcs_handle_t *self, const char *section)
 	{
 		keyfile_line_t *kl = (keyfile_line_t *) iter->data;
 
-		out = mcs_list_append(out, strdup(kl->key));
+		out = mowgli_queue_append(out, strdup(kl->key));
 	}
 
 	return out;
 }
 
-mcs_list_t *
+mowgli_queue_t *
 mcs_keyfile_get_sections(mcs_handle_t *self)
 {
 	mcs_keyfile_handle_t *h = (mcs_keyfile_handle_t *) self->mcs_priv_handle;
-	mcs_list_t *out = NULL, *iter;
+	mowgli_queue_t *out = NULL, *iter;
 
 	for (iter = h->kf->sections; iter != NULL; iter = iter->next)
 	{
 		keyfile_section_t *ks = (keyfile_section_t *) iter->data;
 
-		out = mcs_list_append(out, strdup(ks->name));
+		out = mowgli_queue_append(out, strdup(ks->name));
 	}
 
 	return out;

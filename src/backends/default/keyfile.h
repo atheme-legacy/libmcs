@@ -44,11 +44,11 @@ typedef struct {
 
 typedef struct {
 	char *name;
-	mcs_list_t *lines;
+	mowgli_queue_t *lines;
 } keyfile_section_t;
 
 typedef struct {
-	mcs_list_t *sections;
+	mowgli_queue_t *sections;
 } keyfile_t;
 
 #ifdef __cplusplus
