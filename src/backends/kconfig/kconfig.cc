@@ -266,7 +266,7 @@ namespace {
 		{
 			QString str = i.key();
 
-			out = mowgli_queue_push(out, strdup(str.local8Bit()));
+			out = mowgli_queue_shift(out, strdup(str.local8Bit()));
 		}
 
 		return out;
@@ -285,7 +285,7 @@ namespace {
 		{
 			QString str = *i;
 
-			out = mowgli_queue_push(out, strdup(str.local8Bit()));
+			out = mowgli_queue_shift(out, strdup(str.local8Bit()));
 		}
 
 		return out;
