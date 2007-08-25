@@ -14,7 +14,6 @@ SOURCES = \
 	mcs_backends.c \
 	mcs_handle_factory.c \
 	mcs_init.c \
-	mcs_list.c \
 	mcs_loader.c \
 	mcs_logger.c \
 	mcs_util.c
