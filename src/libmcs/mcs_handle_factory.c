@@ -80,7 +80,7 @@ mcs_new(char *domain)
 void
 mcs_destroy(mcs_handle_t *self)
 {
-	mcs_log("mcs_destroy() is deprecated as of version 0.6, use mowgli_object_unref() instead!");
+	mowgli_log("mcs_destroy() is deprecated as of version 0.6, use mowgli_object_unref() instead!");
 	mowgli_object_unref(self);
 }
 

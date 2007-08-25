@@ -15,7 +15,6 @@ SOURCES = \
 	mcs_handle_factory.c \
 	mcs_init.c \
 	mcs_loader.c \
-	mcs_logger.c \
 	mcs_util.c
 
 OBJECTS = ${SOURCES:.c=.o}

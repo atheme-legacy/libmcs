@@ -76,7 +76,7 @@ mcs_create_directory(const char *path, mode_t mode)
 
 		if (mkdir(ttptr, mode) == -1 && errno != EEXIST)
 		{
-			mcs_log("mcs_create_directory(): mkdir '%s': %s",
+			mowgli_log("mcs_create_directory(): mkdir '%s': %s",
 				ttptr, strerror(errno));
 			return -1;
 		}
@@ -86,7 +86,7 @@ mcs_create_directory(const char *path, mode_t mode)
 
 	if (mkdir(pptr, mode) == -1 && errno != EEXIST)
 	{
-		mcs_log("mcs_create_directory(): mkdir '%s': %s",
+		mowgli_log("mcs_create_directory(): mkdir '%s': %s",
 			pptr, strerror(errno));
 		return -1;
 	}

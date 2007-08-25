@@ -236,13 +236,6 @@ extern void mcs_load_plugins(void);
 extern void mcs_unload_plugins(mowgli_queue_t *l);
 
 /*
- * These functions have to do with logging.
- */
-typedef void (*mcs_log_func_t)(const char *text);
-extern void mcs_log(const char *fmt, ...);
-extern void mcs_log_set_log_func(mcs_log_func_t func);
-
-/*
  * These functions are utility functions.
  */
 extern size_t mcs_strnlen(const char *str, size_t len);

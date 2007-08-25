@@ -184,7 +184,7 @@ keyfile_write(keyfile_t *self, const char *filename)
 
 	if (f == NULL)
 	{
-		mcs_log("keyfile_write(): Failed to open `%s' for writing: %s",
+		mowgli_log("keyfile_write(): Failed to open `%s' for writing: %s",
 			filename, strerror(errno));
 		return MCS_FAIL;
 	}
