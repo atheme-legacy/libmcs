@@ -31,6 +31,10 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* Work around a stupid Qt3 namespace bug. */
+#define FALSE _FALSE
+#define TRUE _TRUE
+
 extern "C" {
 
   #include "libmcs/mcs.h"
@@ -40,17 +44,13 @@ extern "C" {
   extern mcs_backend_t mcs_backend;
 }
 
-/* Work around a stupid Qt3 namespace bug. */
-#define FALSE QT3_FALSE
-#define TRUE QT3_TRUE
+#undef FALSE
+#undef TRUE
 
 #include <kconfig.h>
 #include <kapplication.h>
 #include <kcmdlineargs.h>
 #include <assert.h>
-
-#undef FALSE
-#undef TRUE
 
 typedef struct {
 	KConfig *cfg;
