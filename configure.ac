@@ -36,6 +36,8 @@ AC_CHECK_FUNCS([strstr], , [AC_ERROR([strstr is required for the plugin loader, 
 AC_CHECK_FUNCS([memset setlocale strcasecmp strchr strdup strerror strtol strtod])
 AC_FUNC_STAT
 
+PKG_CHECK_MODULES(MOWGLI, [libmowgli >= 0.4.0], [], [AC_MSG_ERROR([libmowgli 0.4.0 or greater required])])
+
 # Check for optional features.
 AC_ARG_ENABLE(gconf,
     [  --enable-gconf          enable GConf support (default=disabled)],
