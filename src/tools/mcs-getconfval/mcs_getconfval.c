@@ -49,7 +49,7 @@ main(int argc, char *argv[])
 	h = mcs_new(argv[1]);
 	mcs_get_string(h, argv[2], argv[3], &foo);
 	printf("%s/%s => %s\n", argv[2], argv[3], foo);
-	mcs_destroy(h);
+	mowgli_object_unref(h);
 
 	mcs_fini();
 
