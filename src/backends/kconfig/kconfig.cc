@@ -31,10 +31,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* Work around a stupid Qt3 namespace bug. */
-#define FALSE _FALSE
-#define TRUE _TRUE
-
 extern "C" {
 
   #include "libmcs/mcs.h"
@@ -44,8 +40,9 @@ extern "C" {
   extern mcs_backend_t mcs_backend;
 }
 
-#undef FALSE
-#undef TRUE
+/* Work around a stupid Qt3 namespace bug. */
+#define FALSE 0
+#define TRUE  1
 
 #include <kconfig.h>
 #include <kapplication.h>
