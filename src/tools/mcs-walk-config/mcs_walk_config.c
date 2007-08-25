@@ -36,7 +36,7 @@ int
 main(int argc, char *argv[])
 {
 	mcs_handle_t *h;
-	mcs_list_t *groups, *i;
+	mowgli_queue_t *groups, *i;
 	int entries = 0, sections = 0;
 
 	if (argc < 2)
@@ -52,7 +52,7 @@ main(int argc, char *argv[])
 
 	for (i = groups; i != NULL; i = i->next)
 	{
-		mcs_list_t *keys, *i2;
+		mowgli_queue_t *keys, *i2;
 
 		printf("\n%s\n", (char *) i->data);
 		keys = mcs_get_keys(h, i->data);
@@ -65,13 +65,13 @@ main(int argc, char *argv[])
 			entries++;
 		}
 
-		mcs_list_free(keys);
+		mowgli_queue_destroy(keys);
 		free(i->data);
 
 		sections++;
 	}
 
-	mcs_list_free(groups);
+	mowgli_queue_destroy(groups);
 	mcs_fini();
 
 	printf("\n%d entries across %d groups, average %d entries per group\n",

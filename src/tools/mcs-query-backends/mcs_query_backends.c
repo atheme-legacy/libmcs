@@ -35,7 +35,7 @@
 int
 main(int argc, char *argv[])
 {
-	mcs_list_t *l;
+	mowgli_queue_t *l;
 
 	mcs_init();
 
