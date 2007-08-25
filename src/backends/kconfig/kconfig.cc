@@ -252,11 +252,11 @@ namespace {
 		return MCS_OK;
 	}
 
-	mcs_list_t *
+	mowgli_queue_t *
 	mcs_kconfig_get_keys(mcs_handle_t *self, const char *section)
 	{
 		mcs_kconfig_handle_t *h = (mcs_kconfig_handle_t *) self->mcs_priv_handle;
-		mcs_list_t *out = NULL;
+		mowgli_queue_t *out = NULL;
 
 		//  <key    , value  >
 		QMap<QString, QString> map = h->cfg->entryMap(section);
@@ -266,17 +266,17 @@ namespace {
 		{
 			QString str = i.key();
 
-			out = mcs_list_append(out, strdup(str.local8Bit()));
+			out = mowgli_queue_append(out, strdup(str.local8Bit()));
 		}
 
 		return out;
 	}
 
-	mcs_list_t *
+	mowgli_queue_t *
 	mcs_kconfig_get_groups(mcs_handle_t *self)
 	{
 		mcs_kconfig_handle_t *h = (mcs_kconfig_handle_t *) self->mcs_priv_handle;
-		mcs_list_t *out = NULL;
+		mowgli_queue_t *out = NULL;
 
 		QStringList list = h->cfg->groupList();
 
@@ -285,7 +285,7 @@ namespace {
 		{
 			QString str = *i;
 
-			out = mcs_list_append(out, strdup(str.local8Bit()));
+			out = mowgli_queue_append(out, strdup(str.local8Bit()));
 		}
 
 		return out;
