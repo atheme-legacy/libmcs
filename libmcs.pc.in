@@ -14,4 +14,4 @@ Description: Simple, abstractable configuration library.
 Version: @PACKAGE_VERSION@
 Libs: -L${lib_dir} -lmcs
 Cflags: -I${include_dir}
-
+Requires: libmowgli
