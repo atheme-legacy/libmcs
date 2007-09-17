@@ -1,0 +1,22 @@
+syntax: glob
+aclocal.m4
+autom4te.cache
+buildsys.mk
+config.log
+config.status
+configure
+extra.mk
+libmcs.pc
+src/libmcs/mcs_config.h
+src/libmcs/mcs_config.h.in
+src/tools/mcs-getconfval/mcs-getconfval
+src/tools/mcs-info/mcs-info
+src/tools/mcs-query-backends/mcs-query-backends
+src/tools/mcs-setconfval/mcs-setconfval
+src/tools/mcs-walk-config/mcs-walk-config
+.deps
+*.dylib
+*.o
+*.so
+*.so.*
+*~

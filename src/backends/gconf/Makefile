@@ -1,15 +1,11 @@
-include ../../../mk/rules.mk
-include ../../../mk/init.mk
+PLUGIN = gconf${PLUGIN_SUFFIX}
+SRCS = gconf.c
 
-OBJECTIVE_LIBS = libgconf.so
+plugindir = mcs
 
-LIBDIR = ${libdir}/mcs
+include ../../../buildsys.mk
+include ../../../extra.mk
 
-CFLAGS += -fPIC -DPIC -I../.. -DPLUGIN_DIR=\"${libdir}/mcs\" ${GCONF_CFLAGS}
-
-LIBADD += ${GCONF_LIBS}
-
-SOURCES = gconf.c
-OBJECTS = ${SOURCES:.c=.o}
-
-include ../../../mk/objective.mk
+CPPFLAGS += ${PLUGIN_CPPFLAGS} ${MOWGLI_CFLAGS} -I../.. -DPLUGIN_DIR=\"${libdir}/mcs\" ${GCONF_CFLAGS}
+CFLAGS += ${PLUGIN_CFLAGS}
+LIBS += ${MOWGLI_LIBS} ${GCONF_LIBS}

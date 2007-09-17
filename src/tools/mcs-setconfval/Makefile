@@ -1,18 +1,8 @@
-include ../../../mk/rules.mk
-include ../../../mk/init.mk
-include ../../../mk/objective.mk
+PROG = mcs-setconfval
+SRCS = mcs_setconfval.c
 
-OBJECTIVE_BINS = mcs-setconfval
+include ../../../buildsys.mk
+include ../../../extra.mk
 
-LDADD = \
-	-L../../libmcs -lmcs
-
-CFLAGS += -I../..
-
-SOURCES = mcs_setconfval.c
-
-OBJECTS = ${SOURCES:.c=.o}
-
-mcs-setconfval: $(OBJECTS)
-	$(CC) $(LDFLAGS) $(OBJECTS) $(LDADD) -o $@
-	@printf "%10s     %-20s\n" LINK $@
+CPPFLAGS += ${MOWGLI_CFLAGS} -I../..
+LIBS += ${MOWGLI_LIBS} -L../../libmcs -lmcs

@@ -1,18 +1,8 @@
-include ../../../mk/rules.mk
-include ../../../mk/init.mk
-include ../../../mk/objective.mk
+PROG = mcs-walk-config
+SRCS = mcs_walk_config.c
 
-OBJECTIVE_BINS = mcs-walk-config
+include ../../../buildsys.mk
+include ../../../extra.mk
 
-LDADD = \
-	-L../../libmcs -lmcs
-
-CFLAGS += -I../..
-
-SOURCES = mcs_walk_config.c
-
-OBJECTS = ${SOURCES:.c=.o}
-
-mcs-walk-config: $(OBJECTS)
-	$(CC) $(LDFLAGS) $(OBJECTS) $(LDADD) -o $@
-	@printf "%10s     %-20s\n" LINK $@
+CPPFLAGS += ${MOWGLI_CFLAGS} -I../..
+LIBS += ${MOWGLI_LIBS} -L../../libmcs -lmcs

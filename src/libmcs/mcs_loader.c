@@ -52,7 +52,7 @@ mcs_load_plugins(void)
 		void *dl_handle;
 		mcs_backend_t *b;
 
-		if (!strstr(ldirent->d_name, ".so"))
+		if (!strstr(ldirent->d_name, PLUGIN_SUFFIX))
 			continue;
 
 		snprintf(fn, sizeof(fn), "%s/%s", PLUGIN_DIR, ldirent->d_name);

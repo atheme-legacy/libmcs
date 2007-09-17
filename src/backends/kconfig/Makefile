@@ -1,15 +1,11 @@
-include ../../../mk/rules.mk
-include ../../../mk/init.mk
+PLUGIN = kconfig${PLUGIN_SUFFIX}
+SRCS = kconfig.cc
 
-OBJECTIVE_LIBS = libkconfig.so
+plugindir = mcs
 
-LIBDIR = ${libdir}/mcs
+include ../../../buildsys.mk
+include ../../../extra.mk
 
-CXXFLAGS += -fPIC -DPIC -I../.. -DPLUGIN_DIR=\"${libdir}/mcs\"
-
-LIBADD += -lkdecore
-
-SOURCES = kconfig.cc
-OBJECTS = ${SOURCES:.cc=.o}
-
-include ../../../mk/objective.mk
+CPPFLAGS +=  ${MOWGLI_CFLAGS} -I../.. -DPLUGIN_DIR=\"${libdir}/mcs\" ${PLUGIN_CPPFLAGS} ${CXXFLAGS}
+CXXFLAGS += ${PLUGIN_CFLAGS}
+LIBS += -lkdecore ${MOWGLI_LIBS}

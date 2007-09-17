@@ -1,13 +1,11 @@
-include ../../../mk/rules.mk
-include ../../../mk/init.mk
+PLUGIN = keyfile${PLUGIN_SUFFIX}
+SRCS = keyfile.c
 
-OBJECTIVE_LIBS = libkeyfile.so
+plugindir = mcs
 
-LIBDIR = ${libdir}/mcs
+include ../../../buildsys.mk
+include ../../../extra.mk
 
-CFLAGS += -fPIC -DPIC -I../.. -DPLUGIN_DIR=\"${libdir}/mcs\"
-
-SOURCES = keyfile.c
-OBJECTS = ${SOURCES:.c=.o}
-
-include ../../../mk/objective.mk
+CPPFLAGS += ${PLUGIN_CPPFLAGS} ${MOWGLI_CFLAGS} -I../.. -DPLUGIN_DIR=\"${libdir}/mcs\"
+CFLAGS += ${PLUGIN_CFLAGS}
+LIBS += ${MOWGLI_LIBS}
