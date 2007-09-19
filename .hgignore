@@ -18,5 +18,4 @@ src/tools/mcs-walk-config/mcs-walk-config
 *.dylib
 *.o
 *.so
-*.so.*
 *~
