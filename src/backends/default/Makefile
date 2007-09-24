@@ -8,4 +8,4 @@ include ../../../extra.mk
 
 CPPFLAGS += ${PLUGIN_CPPFLAGS} ${MOWGLI_CFLAGS} -I../.. -DPLUGIN_DIR=\"${libdir}/mcs\"
 CFLAGS += ${PLUGIN_CFLAGS}
-LIBS += ${MOWGLI_LIBS}
+LIBS += -L../../libmcs -lmcs ${MOWGLI_LIBS}

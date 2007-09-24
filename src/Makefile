@@ -1,3 +1,3 @@
-SUBDIRS = backends libmcs tools
+SUBDIRS = libmcs backends tools
 
 include ../buildsys.mk
