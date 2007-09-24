@@ -310,7 +310,7 @@ extern void  mcs_handle_class_init(void);
 extern mcs_response_t mcs_backend_register(mcs_backend_t *backend);
 extern mcs_response_t mcs_backend_unregister(mcs_backend_t *backend);
 extern mowgli_queue_t *   mcs_backend_get_list(void);
-extern char *         mcs_backend_select(void);
+extern const char *       mcs_backend_select(void);
 
 /*
  * These functions provide the public interface for creating and closing MCS

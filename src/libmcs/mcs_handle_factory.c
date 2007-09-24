@@ -50,7 +50,8 @@ mcs_handle_destroy(mcs_handle_t *self)
 void
 mcs_handle_class_init(void)
 {
-	mowgli_object_class_init(&klass, "mcs.handle", mcs_handle_destroy, FALSE);
+	mowgli_object_class_init(&klass, "mcs.handle", 
+		(mowgli_destructor_t) mcs_handle_destroy, FALSE);
 }
 
 /* ******************************************************************* */

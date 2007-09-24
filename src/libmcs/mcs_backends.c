@@ -94,7 +94,7 @@ mcs_backend_get_list(void)
  *
  * \return The name of the backend that should be used.
  */
-char *
+const char *
 mcs_backend_select(void)
 {
 	char *env = getenv("MCS_BACKEND");
