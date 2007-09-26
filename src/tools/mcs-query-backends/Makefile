@@ -1,4 +1,4 @@
-PROG = mcs-query-backends
+PROG = mcs-query-backends${PROG_SUFFIX}
 SRCS = mcs_query_backends.c
 
 include ../../../buildsys.mk

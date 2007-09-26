@@ -1,4 +1,4 @@
-PROG = mcs-info
+PROG = mcs-info${PROG_SUFFIX}
 SRCS = mcs_info.c
 
 include ../../../buildsys.mk

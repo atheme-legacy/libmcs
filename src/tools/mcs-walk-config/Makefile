@@ -1,4 +1,4 @@
-PROG = mcs-walk-config
+PROG = mcs-walk-config${PROG_SUFFIX}
 SRCS = mcs_walk_config.c
 
 include ../../../buildsys.mk

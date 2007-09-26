@@ -1,4 +1,4 @@
-PROG = mcs-getconfval
+PROG = mcs-getconfval${PROG_SUFFIX}
 SRCS = mcs_getconfval.c
 
 include ../../../buildsys.mk
