@@ -417,8 +417,12 @@ mcs_keyfile_new(char *domain)
 {
 	char scratch[PATH_MAX];
 	char *magic = getenv("XDG_CONFIG_HOME");
+#ifdef __MINGW32__
+	const mode_t mode755 = 0;
+#else
 	const mode_t mode755 = S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | 
 			       S_IXOTH;
+#endif
 
 	mcs_keyfile_handle_t *h = calloc(sizeof(mcs_keyfile_handle_t), 1);
 	mcs_handle_t *out = calloc(sizeof(mcs_handle_t), 1);

@@ -4,5 +4,5 @@ SRCS = mcs_info.c
 include ../../../buildsys.mk
 include ../../../extra.mk
 
-CPPFLAGS += ${MOWGLI_CFLAGS} -I../..
+CPPFLAGS += ${MOWGLI_CFLAGS} -I../.. -I../../libmcs
 LIBS += ${MOWGLI_LIBS} -L../../libmcs -lmcs

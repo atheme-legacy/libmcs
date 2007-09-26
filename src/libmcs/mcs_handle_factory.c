@@ -60,7 +60,7 @@ mcs_handle_t *
 mcs_new(char *domain)
 {
 	mowgli_queue_t *n;
-	char *magic = mcs_backend_select();
+	char *magic = (char*)mcs_backend_select();
 
 	if (magic == NULL)
 		magic = "default";

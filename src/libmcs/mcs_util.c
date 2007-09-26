@@ -102,7 +102,11 @@ mcs_create_directory(const char *path, mode_t mode)
 	{
 		char *ttptr = mcs_strndup(pptr, (size_t) (tptr - pptr));
 
+#ifdef __MINGW32__
+		if (mkdir(ttptr) == -1 && errno != EEXIST)
+#else
 		if (mkdir(ttptr, mode) == -1 && errno != EEXIST)
+#endif
 		{
 			mowgli_log("mcs_create_directory(): mkdir '%s': %s",
 				ttptr, strerror(errno));
@@ -112,7 +116,11 @@ mcs_create_directory(const char *path, mode_t mode)
 		free(ttptr);
 	}
 
+#ifdef __MINGW32__
+	if (mkdir(pptr) == -1 && errno != EEXIST)
+#else
 	if (mkdir(pptr, mode) == -1 && errno != EEXIST)
+#endif
 	{
 		mowgli_log("mcs_create_directory(): mkdir '%s': %s",
 			pptr, strerror(errno));

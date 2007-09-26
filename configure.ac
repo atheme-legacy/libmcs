@@ -21,7 +21,6 @@ AC_SUBST(PACKAGE)
 
 # Checks for libraries.
 BUILDSYS_SHARED_LIB
-AM_DL
 
 # Checks for header files.
 AC_HEADER_DIRENT
