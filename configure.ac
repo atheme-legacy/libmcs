@@ -21,6 +21,7 @@ AC_SUBST(PACKAGE)
 
 # Checks for libraries.
 BUILDSYS_SHARED_LIB
+AC_CHECK_LIB(dl, dlopen, [LIBS="$LIBS -ldl"])
 
 # Checks for header files.
 AC_HEADER_DIRENT
