@@ -36,7 +36,6 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
-#include <dlfcn.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <dirent.h>
@@ -44,6 +43,10 @@
 #include <limits.h>
 #include <stdarg.h>
 #include <errno.h>
+
+#ifndef __WIN32__
+#include <dlfcn.h>
+#endif
 
 #include <mowgli.h>
 

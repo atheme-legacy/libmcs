@@ -57,7 +57,11 @@ mcs_load_plugins(void)
 
 		snprintf(fn, sizeof(fn), "%s/%s", PLUGIN_DIR, ldirent->d_name);
 
-		dl_handle = dlopen(fn, RTLD_LAZY);
+		dl_handle = dlopen(fn
+#ifndef __WIN32__
+						   , RTLD_LAZY
+#endif
+						   );
 
 		/* TODO: log */
 		if (dl_handle == NULL)
