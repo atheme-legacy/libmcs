@@ -43,38 +43,52 @@ PKG_CHECK_MODULES(MOWGLI, [libmowgli >= 0.4.0], [], [AC_MSG_ERROR([libmowgli 0.4
 
 # Check for optional features.
 AC_ARG_ENABLE(gconf,
-    [  --enable-gconf          enable GConf support (default=disabled)],
+    [AS_HELP_STRING([--disable-gconf], [disable GConf support (default=enabled)])],
     [enable_gconf=$enableval],
-    [enable_gconf="no"]
+    [enable_gconf="yes"]
 )
 
 if test "$enable_gconf" = "yes"; then
-    PKG_CHECK_MODULES(GCONF, [gconf-2.0 >= 2.6.0], ,
-        [AC_MSG_ERROR([Cannot find GConf])]
+    PKG_CHECK_MODULES(GCONF, [gconf-2.0 >= 2.6.0], [],
+	[
+	 AC_MSG_WARN([Cannot find GConf, disabling GConf support])
+	 enable_gconf="no"
+	]
     )
 fi
 
 if test "$enable_gconf" = "yes"; then
-	GCONF_BUILD="gconf"
+    GCONF_BUILD="gconf"
+else
+    enable_gconf="no"
 fi
 
 AC_SUBST(GCONF_BUILD)
 
 AC_ARG_ENABLE(kconfig,
-    [  --enable-kconfig        enable KDE KConfig support (default=disabled)],
+    [AS_HELP_STRING([--disable-kconfig], [disable KDE KConfig support (default=enabled)])],
     [enable_kconfig=$enableval],
-    [enable_kconfig="no"]
+    [enable_kconfig="yes"]
 )
 
 if test "$enable_kconfig" = "yes"; then
-   AC_PROG_CXX
-   # XXX - is this Gentoo-specific?
-   CXXFLAGS="$CXXFLAGS -I/usr/kde/3.5/include -I/usr/qt/3/include"
-   LDFLAGS="$LDFLAGS -L/usr/kde/3.5/lib -I/usr/qt/3/lib"
+    AC_PROG_CXX
+    # XXX - is this Gentoo-specific?
+    CXXFLAGS="$CXXFLAGS -I/usr/kde/3.5/include -I/usr/qt/3/include"
+    LDFLAGS="$LDFLAGS -L/usr/kde/3.5/lib -I/usr/qt/3/lib"
 
-   AC_CHECK_LIB([kdecore], [main], [], [AC_MSG_ERROR([Cannot find libkdecore])])
+    AC_CHECK_LIB([kdecore], [main], [],
+	[
+	 AC_MSG_WARN([Cannot find libkdecore, disabling KDE KConfig support])
+	 enable_kconfig="no"
+	]
+    )
+fi
 
-   KCONFIG_BUILD="kconfig"
+if test "$enable_kconfig" = "yes"; then
+    KCONFIG_BUILD="kconfig"
+else
+    enable_kconfig="no"
 fi
 
 AC_SUBST(KCONFIG_BUILD)
