@@ -1,8 +1,6 @@
 PLUGIN = keyfile${PLUGIN_SUFFIX}
 SRCS = keyfile.c
 
-plugindir = mcs
-
 include ../../../buildsys.mk
 include ../../../extra.mk
 

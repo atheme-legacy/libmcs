@@ -1,8 +1,6 @@
 PLUGIN = gconf${PLUGIN_SUFFIX}
 SRCS = gconf.c
 
-plugindir = mcs
-
 include ../../../buildsys.mk
 include ../../../extra.mk
 
