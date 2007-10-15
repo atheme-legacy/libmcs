@@ -58,9 +58,7 @@ if test "$enable_gconf" = "yes"; then
 	 enable_gconf="no"
 	]
     )
-fi
-
-if test "$enable_gconf" != "yes"; then
+else
     enable_gconf="no"
 fi
 
@@ -87,9 +85,7 @@ if test "$enable_kconfig" = "yes"; then
 	 enable_kconfig="no"
 	]
     )
-fi
-
-if test "$enable_kconfig" != "yes"; then
+else
     enable_kconfig="no"
 fi
 
