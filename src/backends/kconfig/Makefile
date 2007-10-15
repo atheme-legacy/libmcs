@@ -1,8 +1,6 @@
 PLUGIN = kconfig${PLUGIN_SUFFIX}
 SRCS = kconfig.cc
 
-plugindir = mcs
-
 include ../../../buildsys.mk
 include ../../../extra.mk
 
