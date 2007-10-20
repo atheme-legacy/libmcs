@@ -18,25 +18,6 @@ dnl ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 dnl POSSIBILITY OF SUCH DAMAGE.
 dnl
 
-AC_DEFUN([BUILDSYS_PROG_IMPLIB], [
-	AC_MSG_CHECKING(whether we need an implib)
-	case "$target" in
-		*-*-cygwin | *-*-mingw32)
-			AC_MSG_RESULT(yes)
-			PROG_IMPLIB_NEEDED='yes'
-			PROG_IMPLIB_LDFLAGS='-Wl,-export-all-symbols,--out-implib,lib${PROG}.a'
-			;;
-		*)
-			AC_MSG_RESULT(no)
-			PROG_IMPLIB_NEEDED='no'
-			PROG_IMPLIB_LDFLAGS=''
-			;;
-	esac
-	
-	AC_SUBST(PROG_IMPLIB_NEEDED)
-	AC_SUBST(PROG_IMPLIB_LDFLAGS)
-])
-
 AC_DEFUN([BUILDSYS_SHARED_LIB], [
 	AC_MSG_CHECKING(for shared library system)
 	case "$target" in
@@ -74,7 +55,7 @@ AC_DEFUN([BUILDSYS_SHARED_LIB], [
 			AC_MSG_RESULT(Solaris)
 			LIB_CPPFLAGS='-DPIC'
 			LIB_CFLAGS='-fPIC'
-			LIB_LDFLAGS='-shared -fPIC -Wl,-soname=${LIB}.${LIB_MAJOR}.${LIB_MINOR}'
+			LIB_LDFLAGS='-shared -fPIC -Wl,-soname=${LIB}.${LIB_MAJOR}'
 			LIB_PREFIX='lib'
 			LIB_SUFFIX='.so'
 			PLUGIN_CPPFLAGS='-DPIC'
@@ -104,7 +85,7 @@ AC_DEFUN([BUILDSYS_SHARED_LIB], [
 			AC_MSG_RESULT(POSIX)
 			LIB_CPPFLAGS='-DPIC'
 			LIB_CFLAGS='-fPIC'
-			LIB_LDFLAGS='-shared -fPIC -Wl,-soname=${LIB}.${LIB_MAJOR}.${LIB_MINOR}.0'
+			LIB_LDFLAGS='-shared -fPIC -Wl,-soname=${LIB}.${LIB_MAJOR}'
 			LIB_PREFIX='lib'
 			LIB_SUFFIX='.so'
 			PLUGIN_CPPFLAGS='-DPIC'
