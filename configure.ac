@@ -49,16 +49,15 @@ AC_ARG_ENABLE(gconf,
 )
 
 if test "$enable_gconf" = "yes"; then
-    PKG_CHECK_MODULES(GCONF, [gconf-2.0 >= 2.6.0], [],
+    PKG_CHECK_MODULES(GCONF, [gconf-2.0 >= 2.6.0],
+	[
+	 GCONF_BUILD="gconf"
+	],
 	[
 	 AC_MSG_WARN([Cannot find GConf, disabling GConf support])
 	 enable_gconf="no"
 	]
     )
-fi
-
-if test "$enable_gconf" = "yes"; then
-    GCONF_BUILD="gconf"
 else
     enable_gconf="no"
 fi
@@ -77,16 +76,15 @@ if test "$enable_kconfig" = "yes"; then
     CXXFLAGS="$CXXFLAGS -I/usr/kde/3.5/include -I/usr/qt/3/include"
     LDFLAGS="$LDFLAGS -L/usr/kde/3.5/lib -I/usr/qt/3/lib"
 
-    AC_CHECK_LIB([kdecore], [main], [],
+    AC_CHECK_LIB([kdecore], [main], 
+	[
+	 KCONFIG_BUILD="kconfig"
+	],
 	[
 	 AC_MSG_WARN([Cannot find libkdecore, disabling KDE KConfig support])
 	 enable_kconfig="no"
 	]
     )
-fi
-
-if test "$enable_kconfig" = "yes"; then
-    KCONFIG_BUILD="kconfig"
 else
     enable_kconfig="no"
 fi
