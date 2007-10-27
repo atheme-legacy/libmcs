@@ -69,22 +69,36 @@ AC_ARG_ENABLE(kconfig,
     [enable_kconfig=$enableval],
     [enable_kconfig="yes"]
 )
+AC_ARG_WITH(qt-path,
+	[AS_HELP_STRING([--with-qt-path], [path to Qt3 base directory (required for kconfig)])],
+	[qtpath=$withval],
+	[qtpath=/usr/qt/3]
+)
+AC_ARG_WITH(kde-path,
+	[AS_HELP_STRING([--with-kde-path], [path to KDE3 base directory (required for kconfig)])],
+	[kdepath=$withval],
+	[kdepath=/usr/kde/3.5]
+)
 
 if test "$enable_kconfig" = "yes"; then
     AC_PROG_CXX
-    # XXX - is this Gentoo-specific?
-    CXXFLAGS="$CXXFLAGS -I/usr/kde/3.5/include -I/usr/qt/3/include"
-    LDFLAGS="$LDFLAGS -L/usr/kde/3.5/lib -I/usr/qt/3/lib"
+    # XXX - does this work?
+	KCONFIG_FLAGS="-I${kdepath}/include -I${qtpath}/include"
+    KCONFIG_LIBS="-L${kdepath}/lib -I${qtpath}/lib"
+	CFLAGS_TMP="${CFLAGS}"
+	LDFLAGS_TMP="${LDFLAGS}"
+	CFLAGS="${CFLAGS} ${KCONFIG_FLAGS}"
+	LDFLAGS="${LDFLAGS} ${KCONFIG_LIBS}"
 
-    AC_CHECK_LIB([kdecore], [main], 
-	[
-	 KCONFIG_BUILD="kconfig"
-	],
-	[
-	 AC_MSG_WARN([Cannot find libkdecore, disabling KDE KConfig support])
-	 enable_kconfig="no"
-	]
+    AC_CHECK_LIB([kdecore], [main],
+		[KCONFIG_BUILD="kconfig"],
+		[AC_MSG_WARN([Cannot find libkdecore, disabling KDE KConfig support])
+		enable_kconfig="no"]
     )
+	CFLAGS="${CFLAGS_TMP}"
+	LDFLAGS="${LDFLAGS_TMP}"
+	AC_SUBST(KCONFIG_FLAGS)
+	AC_SUBST(KCONFIG_LIBS)
 else
     enable_kconfig="no"
 fi
