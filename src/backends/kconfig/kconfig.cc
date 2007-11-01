@@ -64,7 +64,7 @@ namespace {
 		if (!KApplication::kApplication())
 		{
 	  		/* Initialise a fake KDE application if none present */
-			static char *fake_argv[] = { "mcs_backend" };
+			static char *fake_argv[] = { (char *)"mcs_backend" };
 
 			KCmdLineArgs::init(1, fake_argv, "mcs_backend", "MCS KConfig Backend",
 				"Just a fake application to be able to use KConfig backend with non-KDE applications.",

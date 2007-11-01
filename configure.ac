@@ -43,38 +43,64 @@ PKG_CHECK_MODULES(MOWGLI, [libmowgli >= 0.4.0], [], [AC_MSG_ERROR([libmowgli 0.4
 
 # Check for optional features.
 AC_ARG_ENABLE(gconf,
-    [  --enable-gconf          enable GConf support (default=disabled)],
+    [AS_HELP_STRING([--disable-gconf], [disable GConf support (default=enabled)])],
     [enable_gconf=$enableval],
-    [enable_gconf="no"]
+    [enable_gconf="yes"]
 )
 
 if test "$enable_gconf" = "yes"; then
-    PKG_CHECK_MODULES(GCONF, [gconf-2.0 >= 2.6.0], ,
-        [AC_MSG_ERROR([Cannot find GConf])]
+    PKG_CHECK_MODULES(GCONF, [gconf-2.0 >= 2.6.0],
+	[
+	 GCONF_BUILD="gconf"
+	],
+	[
+	 AC_MSG_WARN([Cannot find GConf, disabling GConf support])
+	 enable_gconf="no"
+	]
     )
-fi
-
-if test "$enable_gconf" = "yes"; then
-	GCONF_BUILD="gconf"
+else
+    enable_gconf="no"
 fi
 
 AC_SUBST(GCONF_BUILD)
 
 AC_ARG_ENABLE(kconfig,
-    [  --enable-kconfig        enable KDE KConfig support (default=disabled)],
+    [AS_HELP_STRING([--disable-kconfig], [disable KDE KConfig support (default=enabled)])],
     [enable_kconfig=$enableval],
-    [enable_kconfig="no"]
+    [enable_kconfig="yes"]
+)
+AC_ARG_WITH(qt-path,
+	[AS_HELP_STRING([--with-qt-path], [path to Qt3 base directory (required for kconfig)])],
+	[qtpath=$withval],
+	[qtpath=/usr/qt/3]
+)
+AC_ARG_WITH(kde-path,
+	[AS_HELP_STRING([--with-kde-path], [path to KDE3 base directory (required for kconfig)])],
+	[kdepath=$withval],
+	[kdepath=/usr/kde/3.5]
 )
 
 if test "$enable_kconfig" = "yes"; then
-   AC_PROG_CXX
-   # XXX - is this Gentoo-specific?
-   CXXFLAGS="$CXXFLAGS -I/usr/kde/3.5/include -I/usr/qt/3/include"
-   LDFLAGS="$LDFLAGS -L/usr/kde/3.5/lib -I/usr/qt/3/lib"
+    AC_PROG_CXX
+    # XXX - does this work?
+	KCONFIG_FLAGS="-I${kdepath}/include -I${qtpath}/include"
+    KCONFIG_LIBS="-L${kdepath}/lib -I${qtpath}/lib"
+	CFLAGS_TMP="${CFLAGS}"
+	LDFLAGS_TMP="${LDFLAGS}"
+	CFLAGS="${CFLAGS} ${KCONFIG_FLAGS}"
+	LDFLAGS="${LDFLAGS} ${KCONFIG_LIBS}"
 
-   AC_CHECK_LIB([kdecore], [main], [], [AC_MSG_ERROR([Cannot find libkdecore])])
-
-   KCONFIG_BUILD="kconfig"
+    AC_CHECK_LIB([kdecore], [main],
+		[KCONFIG_BUILD="kconfig"],
+		[AC_MSG_WARN([Cannot find libkdecore, disabling KDE KConfig support])
+		enable_kconfig="no"]
+    )
+	CFLAGS="${CFLAGS_TMP}"
+	LDFLAGS="${LDFLAGS_TMP}"
+	AC_SUBST(KCONFIG_FLAGS)
+	AC_SUBST(KCONFIG_LIBS)
+else
+    enable_kconfig="no"
 fi
 
 AC_SUBST(KCONFIG_BUILD)
