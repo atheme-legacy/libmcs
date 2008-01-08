@@ -36,7 +36,7 @@
 keyfile_t *
 keyfile_new(void)
 {
-	return calloc(sizeof(keyfile_t), 1);
+	return mowgli_alloc(sizeof(keyfile_t));
 }
 
 void
@@ -60,21 +60,21 @@ keyfile_destroy(keyfile_t *file)
 
 			free(line->key);
 			free(line->value);
-			free(line);
+			mowgli_free(line);
 		}
 
 		mowgli_queue_destroy(sec->lines);
-		free(sec);
+		mowgli_free(sec);
 	}
 
 	mowgli_queue_destroy(file->sections);
-	free(file);
+	mowgli_free(file);
 }
 
 static keyfile_section_t *
 keyfile_create_section(keyfile_t *parent, const char *name)
 {
-	keyfile_section_t *out = calloc(sizeof(keyfile_section_t), 1);
+	keyfile_section_t *out = mowgli_alloc(sizeof(keyfile_section_t));
 
 	out->name = strdup(name);
 	parent->sections = mowgli_queue_shift(parent->sections, out);
@@ -103,7 +103,7 @@ static keyfile_line_t *
 keyfile_create_line(keyfile_section_t *parent, const char *key,
 		    const char *value)
 {
-	keyfile_line_t *out = calloc(sizeof(keyfile_line_t), 1);
+	keyfile_line_t *out = mowgli_alloc(sizeof(keyfile_line_t));
 
 	if (key == NULL)
 		return NULL;
@@ -417,7 +417,8 @@ mcs_keyfile_new(char *domain)
 {
 	char scratch[PATH_MAX];
 	char *magic = getenv("XDG_CONFIG_HOME");
-#ifdef __MINGW32__
+
+#if defined(__WIN32) || defined(__MINGW32__)
 	const mode_t mode755 = 0;
 #else
 	const mode_t mode755 = S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | 
@@ -447,10 +448,19 @@ mcs_keyfile_new(char *domain)
 void
 mcs_keyfile_destroy(mcs_handle_t *self)
 {
+	char tfile[PATH_MAX];
 	mcs_keyfile_handle_t *h = (mcs_keyfile_handle_t *) self->mcs_priv_handle;
 
-	keyfile_write(h->kf, h->loc);
+	return_if_fail(h->kf != NULL);
+	return_if_fail(h->loc != NULL);
+
+	mcs_strlcpy(tfile, h->loc, PATH_MAX);
+	mcs_strlcat(tfile, ".tmp", PATH_MAX);
+
+	keyfile_write(h->kf, tfile);
 	keyfile_destroy(h->kf);
+
+	rename(tfile, h->loc);
 
 	free(h->loc);
 	free(h);
