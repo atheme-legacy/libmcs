@@ -40,15 +40,17 @@
 typedef struct {
 	char *key;
 	char *value;
+	mowgli_node_t node;
 } keyfile_line_t;
 
 typedef struct {
 	char *name;
-	mowgli_queue_t *lines;
+	mowgli_list_t lines;
+	mowgli_node_t node;
 } keyfile_section_t;
 
 typedef struct {
-	mowgli_queue_t *sections;
+	mowgli_list_t sections;
 } keyfile_t;
 
 #ifdef __cplusplus

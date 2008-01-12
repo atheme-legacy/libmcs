@@ -44,30 +44,30 @@ keyfile_destroy(keyfile_t *file)
 {
 	keyfile_section_t *sec;
 	keyfile_line_t *line;
-	mowgli_queue_t *n, *n2;
+	mowgli_node_t *n, *tn, *n2, *tn2;
 
 	if (file == NULL)
 		return;
 
-	for (n = file->sections; n != NULL; n = n->next)
+	MOWGLI_ITER_FOREACH_SAFE(n, tn, file->sections.head)
 	{
 		sec = (keyfile_section_t *) n->data;
 		free(sec->name);
 
-		for (n2 = sec->lines; n2 != NULL; n2 = n2->next)
+		MOWGLI_ITER_FOREACH_SAFE(n2, tn2, sec->lines.head)
 		{
 			line = (keyfile_line_t *) n2->data;
 
 			free(line->key);
 			free(line->value);
+			mowgli_node_delete(n2, &sec->lines);
 			mowgli_free(line);
 		}
 
-		mowgli_queue_destroy(sec->lines);
+		mowgli_node_delete(n, &file->sections);
 		mowgli_free(sec);
 	}
 
-	mowgli_queue_destroy(file->sections);
 	mowgli_free(file);
 }
 
@@ -77,7 +77,8 @@ keyfile_create_section(keyfile_t *parent, const char *name)
 	keyfile_section_t *out = mowgli_alloc(sizeof(keyfile_section_t));
 
 	out->name = strdup(name);
-	parent->sections = mowgli_queue_shift(parent->sections, out);
+
+	mowgli_node_add(out, &out->node, &parent->sections);
 
 	return out;
 }
@@ -85,10 +86,10 @@ keyfile_create_section(keyfile_t *parent, const char *name)
 static keyfile_section_t *
 keyfile_locate_section(keyfile_t *parent, const char *name)
 {
-	mowgli_queue_t *n;
+	mowgli_node_t *n;
 	keyfile_section_t *out;
 
-	for (n = parent->sections; n != NULL; n = n->next)
+	MOWGLI_ITER_FOREACH(n, parent->sections.head)
 	{
 		out = (keyfile_section_t *) n->data;
 
@@ -113,7 +114,7 @@ keyfile_create_line(keyfile_section_t *parent, const char *key,
 	if (value != NULL)
 		out->value = strdup(value);
 
-	parent->lines = mowgli_queue_shift(parent->lines, out);
+	mowgli_node_add(out, &out->node, &parent->lines);
 
 	return out;
 }
@@ -121,10 +122,10 @@ keyfile_create_line(keyfile_section_t *parent, const char *key,
 static keyfile_line_t *
 keyfile_locate_line(keyfile_section_t *parent, const char *key)
 {
-	mowgli_queue_t *n;
+	mowgli_node_t *n;
 	keyfile_line_t *out;
 
-	for (n = parent->lines; n != NULL; n = n->next)
+	MOWGLI_ITER_FOREACH(n, parent->lines.head)
 	{
 		out = (keyfile_line_t *) n->data;
 
@@ -178,7 +179,7 @@ mcs_response_t
 keyfile_write(keyfile_t *self, const char *filename)
 {
 	FILE *f = fopen(filename, "w");
-	mowgli_queue_t *n, *n2;
+	mowgli_node_t *n, *n2;
 	keyfile_section_t *sec;
 	keyfile_line_t *line;
 
@@ -189,14 +190,14 @@ keyfile_write(keyfile_t *self, const char *filename)
 		return MCS_FAIL;
 	}
 
-	for (n = self->sections; n != NULL; n = n->next)
+	MOWGLI_ITER_FOREACH(n, self->sections.head)	
 	{
 		sec = (keyfile_section_t *) n->data;
-		if (sec->lines != NULL)
+		if (sec->lines.count != 0)
 		{
 			fprintf(f, "[%s]\n", sec->name);
 
-			for (n2 = sec->lines; n2 != NULL; n2 = n2->next)
+			MOWGLI_ITER_FOREACH(n2, sec->lines.head)
 			{
 				line = (keyfile_line_t *) n2->data;
 				fprintf(f, "%s=%s\n", line->key, line->value);
@@ -394,7 +395,7 @@ keyfile_unset_key(keyfile_t *self, const char *section,
 			free(line->key);
 			free(line->value);
 
-			sec->lines = mowgli_queue_remove_data(sec->lines, line);
+			mowgli_node_delete(&line->node, &sec->lines);
 
 			free(line);
 		}
@@ -572,12 +573,13 @@ mcs_keyfile_get_keys(mcs_handle_t *self, const char *section)
 {
 	mcs_keyfile_handle_t *h = (mcs_keyfile_handle_t *) self->mcs_priv_handle;
 	keyfile_section_t *ks = keyfile_locate_section(h->kf, section);
-	mowgli_queue_t *out = NULL, *iter;
+	mowgli_queue_t *out = NULL;
+	mowgli_node_t *iter;
 
 	if (ks == NULL)
 		return NULL;
 
-	for (iter = ks->lines; iter != NULL; iter = iter->next)
+	MOWGLI_ITER_FOREACH(iter, ks->lines.head)
 	{
 		keyfile_line_t *kl = (keyfile_line_t *) iter->data;
 
@@ -591,9 +593,10 @@ mowgli_queue_t *
 mcs_keyfile_get_sections(mcs_handle_t *self)
 {
 	mcs_keyfile_handle_t *h = (mcs_keyfile_handle_t *) self->mcs_priv_handle;
-	mowgli_queue_t *out = NULL, *iter;
+	mowgli_queue_t *out = NULL;
+	mowgli_node_t *iter;
 
-	for (iter = h->kf->sections; iter != NULL; iter = iter->next)
+	MOWGLI_ITER_FOREACH(iter, h->kf->sections.head)
 	{
 		keyfile_section_t *ks = (keyfile_section_t *) iter->data;
 
