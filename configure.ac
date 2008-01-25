@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([libmcs], [0.6.0], [bugs+libmcs@atheme.org])
+AC_INIT([libmcs], [0.7.0], [bugs+libmcs@atheme.org])
 AC_CONFIG_SRCDIR([src/libmcs/mcs_loader.c])
 AC_CONFIG_HEADER([src/libmcs/mcs_config.h])
 
@@ -83,18 +83,21 @@ AC_ARG_WITH(kde-path,
 if test "$enable_kconfig" = "yes"; then
     AC_PROG_CXX
     # XXX - does this work?
-	KCONFIG_FLAGS="-I${kdepath}/include -I${qtpath}/include"
-    KCONFIG_LIBS="-L${kdepath}/lib -I${qtpath}/lib"
+    KCONFIG_FLAGS="-I${kdepath}/include -I${qtpath}/include"
+    KCONFIG_LIBS="-L${kdepath}/lib -L${qtpath}/lib"
 	CFLAGS_TMP="${CFLAGS}"
 	LDFLAGS_TMP="${LDFLAGS}"
 	CFLAGS="${CFLAGS} ${KCONFIG_FLAGS}"
 	LDFLAGS="${LDFLAGS} ${KCONFIG_LIBS}"
 
+    LIBS_TMP="${LIBS}"
     AC_CHECK_LIB([kdecore], [main],
 		[KCONFIG_BUILD="kconfig"],
 		[AC_MSG_WARN([Cannot find libkdecore, disabling KDE KConfig support])
 		enable_kconfig="no"]
     )
+    KCONFIG_LIBS="${KCONFIG_LIBS} ${LIBS}"
+        LIBS="${LIBS_TMP}"
 	CFLAGS="${CFLAGS_TMP}"
 	LDFLAGS="${LDFLAGS_TMP}"
 	AC_SUBST(KCONFIG_FLAGS)
