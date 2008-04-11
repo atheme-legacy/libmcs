@@ -5,4 +5,4 @@ include ../../../buildsys.mk
 include ../../../extra.mk
 
 CPPFLAGS += ${MOWGLI_CFLAGS} -I../.. -I../../libmcs
-LIBS += ${MOWGLI_LIBS} -L../../libmcs -lmcs
+LIBS += -L../../libmcs -lmcs ${MOWGLI_LIBS}
