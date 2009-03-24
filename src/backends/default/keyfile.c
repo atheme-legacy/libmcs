@@ -435,7 +435,7 @@ mcs_keyfile_new(char *domain)
 	if (magic != NULL)
 		snprintf(scratch, PATH_MAX, "%s/%s", magic, domain);
 	else
-  		snprintf(scratch, PATH_MAX, "%s/.config/%s", getenv("HOME"), domain);
+		snprintf(scratch, PATH_MAX, "%s/.config/%s", getenv("HOME"), domain);
 
 	mcs_create_directory(scratch, mode755);
 	mcs_strlcat(scratch, "/config", PATH_MAX);

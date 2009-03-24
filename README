@@ -97,6 +97,8 @@ A simple example would be this snippet of C code:
 
      printf("%s\n", foo);
 
+     mowgli_object_unref(mcs);
+
      mcs_fini();
 
      return 0;
