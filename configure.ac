@@ -12,6 +12,7 @@ AC_CANONICAL_TARGET
 dnl Checks for programs.
 AC_PROG_CC
 AC_PROG_LN_S
+AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 AC_ISC_POSIX
 
@@ -118,6 +119,7 @@ extra.mk
 libmcs.pc
 ])
 AC_OUTPUT
+BUILDSYS_TOUCH_DEPS
 
 
 dnl Print out results
