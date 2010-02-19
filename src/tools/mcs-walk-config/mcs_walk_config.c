@@ -37,7 +37,7 @@ main(int argc, char *argv[])
 {
 	mcs_handle_t *h;
 	mowgli_queue_t *groups, *i;
-	int entries = 0, sections = 0;
+	int entries = 0, sections = 0, avgentries = 0;
 
 	if (argc < 2)
 	{
@@ -75,8 +75,9 @@ main(int argc, char *argv[])
 	mowgli_queue_destroy(groups);
 	mcs_fini();
 
+    avgentries = sections ? (entries/sections) : 0;
 	printf("\n%d entries across %d groups, average %d entries per group\n",
-		entries, sections, entries / sections);
+		entries, sections, avgentries);
 
 	return 0;
 }
