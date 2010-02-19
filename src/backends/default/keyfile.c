@@ -316,6 +316,8 @@ keyfile_set_string(keyfile_t *self, const char *section,
 
 		if (value != NULL)
 			line->value = strdup(value);
+		else
+			line->value = NULL;
 	}
 	else
 		keyfile_create_line(sec, key, value);
