@@ -76,6 +76,7 @@ includedir = @includedir@
 includesubdir ?= ${PACKAGE}
 mandir = @mandir@
 mansubdir ?= man1
+sysconfdir = @sysconfdir@
 
 OBJS1  = ${SRCS:.c=.o}
 OBJS2  = ${OBJS1:.cc=.o}
