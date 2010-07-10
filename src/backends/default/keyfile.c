@@ -154,7 +154,11 @@ keyfile_open(const char *filename)
 			if ((tmp = strchr(buffer, ']')))
 			{
 				*tmp = '\0';
-				sec = keyfile_create_section(out, &buffer[1]);
+
+				if ((sec = keyfile_locate_section(out, &buffer[1])) == NULL)
+					sec = keyfile_create_section(out, &buffer[1]);
+				else
+					mowgli_log("Duplicate section %s in %s", &buffer[1], filename);
 			}
 		}
 		else if (buffer[0] != '#' && sec != NULL)
@@ -165,7 +169,12 @@ keyfile_open(const char *filename)
 				char *tmp2 = strtok(NULL, "\n");
 
 				if (tmp2 != NULL && strlen(tmp2) > 0)
-					keyfile_create_line(sec, tmp, tmp2);
+				{
+					if (keyfile_locate_line(sec, tmp) == NULL)
+						keyfile_create_line(sec, tmp, tmp2);
+					else
+						mowgli_log("Duplicate value %s in section %s in %s", tmp, sec->name, filename);
+				}
 			}
 		}
 	}
@@ -190,7 +199,7 @@ keyfile_write(keyfile_t *self, const char *filename)
 		return MCS_FAIL;
 	}
 
-	MOWGLI_ITER_FOREACH(n, self->sections.head)	
+	MOWGLI_ITER_FOREACH(n, self->sections.head)
 	{
 		sec = (keyfile_section_t *) n->data;
 		if (sec->lines.count != 0)
@@ -424,7 +433,7 @@ mcs_keyfile_new(char *domain)
 #if defined(__WIN32) || defined(__MINGW32__)
 	const mode_t mode755 = 0;
 #else
-	const mode_t mode755 = S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | 
+	const mode_t mode755 = S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH |
 			       S_IXOTH;
 #endif
 
