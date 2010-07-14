@@ -38,14 +38,8 @@
 #define __KEYFILE_H__
 
 typedef struct {
-	char *key;
-	char *value;
-	mowgli_node_t node;
-} keyfile_line_t;
-
-typedef struct {
 	char *name;
-	mowgli_list_t lines;
+	mowgli_patricia_t *lines;
 	mowgli_node_t node;
 } keyfile_section_t;
 
