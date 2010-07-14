@@ -191,3 +191,18 @@ size_t mcs_strlcpy(char *dest, const char *src, size_t size)
 	return retlen;
 }
 
+/**
+ * \brief Canonization function for MCS backend entity names.
+ *
+ * \param str The string to canonize.
+ */
+void mcs_strcasecanon(char *str)
+{
+	while (*str)
+	{
+		*str = toupper(*str);
+		str++;
+	}
+
+	return;
+}

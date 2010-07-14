@@ -395,7 +395,7 @@ extern mowgli_queue_t *mcs_get_sections(mcs_handle_t *handle);
  * These functions have to do with the plugin loader.
  */
 extern void mcs_load_plugins(void);
-extern void mcs_unload_plugins(mowgli_queue_t *l);
+extern void mcs_unload_plugins(mowgli_patricia_t *l);
 
 /*
  * These functions are utility functions.
@@ -405,5 +405,6 @@ extern char * mcs_strndup(const char *str, size_t len);
 extern int mcs_create_directory(const char *path, mode_t mode);
 extern size_t mcs_strlcat(char *dest, const char *src, size_t count);
 extern size_t mcs_strlcpy(char *dest, const char *src, size_t count);
+extern void mcs_strcasecanon(char *str);
 
 #endif

@@ -89,16 +89,15 @@ mcs_load_plugins(void)
  * \param pl A mowgli.queue representing a list of plugins to unload.
  */
 void
-mcs_unload_plugins(mowgli_queue_t *pl)
+mcs_unload_plugins(mowgli_patricia_t *pl)
 {
-	mowgli_queue_t *n;
+	mowgli_patricia_iteration_state_t state;
+	mcs_backend_t *b;
 
-	for (n = pl; n != NULL; n = n->next)
+	MOWGLI_PATRICIA_FOREACH(b, &state, pl)
 	{
-		mcs_backend_t *b = (mcs_backend_t *) n->data;
 		void *handle = b->handle;
 
 		dlclose(handle);
 	}
 }
-

@@ -32,7 +32,7 @@
 
 #include "libmcs/mcs.h"
 
-mowgli_queue_t *mcs_backends_lst = NULL;
+mowgli_patricia_t *mcs_backends = NULL;
 
 /* ******************************************************************* */
 
@@ -59,23 +59,19 @@ mcs_handle_class_init(void)
 mcs_handle_t *
 mcs_new(char *domain)
 {
-	mowgli_queue_t *n;
-	char *magic = (char*)mcs_backend_select();
+	mcs_backend_t *b;
+	const char *magic;
 
-	if (magic == NULL)
+	if ((magic = mcs_backend_select()) == NULL)
 		magic = "default";
 
-	for (n = mcs_backends_lst; n != NULL; n = n->next)
+	b = mowgli_patricia_retrieve(mcs_backends, magic);
+	if (b != NULL)
 	{
-		mcs_backend_t *b = (mcs_backend_t *) n->data;
+		mcs_handle_t *out = b->mcs_new(domain);
+		mowgli_object_init(mowgli_object(out), NULL, &klass, NULL);
 
-		if (!strcmp(b->name, magic))
-		{
-			mcs_handle_t *out = b->mcs_new(domain);
-			mowgli_object_init(mowgli_object(out), NULL, &klass, NULL);
-
-			return out;
-		}
+		return out;
 	}
 
 	return NULL;

@@ -37,7 +37,7 @@
  *
  * This is a list of registered backends. It is not part of the public API.
  */
-extern mowgli_queue_t *mcs_backends_lst;
+extern mowgli_patricia_t *mcs_backends;
 
 /**
  * \brief Initialises the mcs library classes and loads the backend plugins.
@@ -54,6 +54,8 @@ mcs_init(void)
 {
 	mowgli_init();
 
+	mcs_backends = mowgli_patricia_create(mcs_strcasecanon);
+
 	mcs_handle_class_init();
 	mcs_load_plugins();
 }
@@ -67,7 +69,9 @@ mcs_init(void)
 void
 mcs_fini(void)
 {
-	mcs_unload_plugins(mcs_backends_lst);
+	mcs_unload_plugins(mcs_backends);
+
+	mowgli_patricia_destroy(mcs_backends, NULL, NULL);
 }
 
 /**

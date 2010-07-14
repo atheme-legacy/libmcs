@@ -32,7 +32,7 @@
 
 #include "libmcs/mcs.h"
 
-extern mowgli_queue_t *mcs_backends_lst;
+extern mowgli_patricia_t *mcs_backends;
 
 /**
  * \brief Registers a custom mcs.backend.
@@ -48,7 +48,7 @@ extern mowgli_queue_t *mcs_backends_lst;
 mcs_response_t
 mcs_backend_register(mcs_backend_t *b)
 {
-	mcs_backends_lst = mowgli_queue_shift(mcs_backends_lst, b);
+	mowgli_patricia_add(mcs_backends, b->name, b);
 
 	return MCS_OK;
 }
@@ -67,7 +67,7 @@ mcs_backend_register(mcs_backend_t *b)
 mcs_response_t
 mcs_backend_unregister(mcs_backend_t *b)
 {
-	mcs_backends_lst = mowgli_queue_remove_data(mcs_backends_lst, b);
+	mowgli_patricia_delete(mcs_backends, b->name);
 
 	return MCS_OK;
 }
@@ -82,7 +82,14 @@ mcs_backend_unregister(mcs_backend_t *b)
 mowgli_queue_t *
 mcs_backend_get_list(void)
 {
-	return mcs_backends_lst;
+	mowgli_queue_t *l = NULL;
+	mowgli_patricia_iteration_state_t state;
+	mcs_backend_t *b;
+
+	MOWGLI_PATRICIA_FOREACH(b, &state, mcs_backends)
+		l = mowgli_queue_shift(l, b);
+
+	return l;
 }
 
 /**
