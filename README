@@ -117,13 +117,10 @@ configuration database:
 5. Reporting a bug that you have found in mcs
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-Please send mail to bugs+libmcs -at- atheme.org, and include a code
-snippet which demonstrates the irregular behaviour.
+Please open a bug on our JIRA instance at:
+   http://jira.atheme.org/
 
-Alternatively, you can try the Atheme bugtracker, at:
-   http://bugs-meta.atheme.org
-
-You will want to select the libmcs project for reporting bugs this way.
+You will want to select the libmcs project for reporting bugs.
 
 
 6. The mcs userland tools
