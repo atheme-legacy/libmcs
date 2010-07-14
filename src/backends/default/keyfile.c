@@ -214,6 +214,7 @@ keyfile_write(keyfile_t *self, const char *filename)
 		}
 	}
 
+	fsync(fileno(f));
 	fclose(f);
 
 	return MCS_OK;
