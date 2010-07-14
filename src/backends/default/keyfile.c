@@ -187,7 +187,7 @@ keyfile_open(const char *filename)
 mcs_response_t
 keyfile_write(keyfile_t *self, const char *filename)
 {
-	FILE *f = fopen(filename, "w");
+	FILE *f = fopen(filename, "w+t");
 	mowgli_node_t *n, *n2;
 	keyfile_section_t *sec;
 	keyfile_line_t *line;
