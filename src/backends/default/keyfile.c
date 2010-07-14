@@ -38,7 +38,12 @@ void nocanon(char *str) {}
 keyfile_t *
 keyfile_new(void)
 {
-	return mowgli_alloc(sizeof(keyfile_t));
+	keyfile_t *out;
+
+	out = mowgli_alloc(sizeof(keyfile_t));
+	out->sections = mowgli_patricia_create(nocanon);
+
+	return out;
 }
 
 static void
@@ -47,26 +52,24 @@ keyfile_line_free_cb(const char *key, void *data, void *privdata)
 	free(data);
 }
 
+static void
+keyfile_section_free_cb(const char *key, void *data, void *privdata)
+{
+	keyfile_section_t *sec = data;
+
+	mowgli_patricia_destroy(sec->lines, keyfile_line_free_cb, sec);
+
+	free(sec->name);
+	mowgli_free(sec);
+}
+
 void
 keyfile_destroy(keyfile_t *file)
 {
-	keyfile_section_t *sec;
-	mowgli_node_t *n, *tn;
-
 	if (file == NULL)
 		return;
 
-	MOWGLI_ITER_FOREACH_SAFE(n, tn, file->sections.head)
-	{
-		sec = (keyfile_section_t *) n->data;
-		free(sec->name);
-
-		mowgli_patricia_destroy(sec->lines, keyfile_line_free_cb, NULL);
-
-		mowgli_node_delete(n, &file->sections);
-		mowgli_free(sec);
-	}
-
+	mowgli_patricia_destroy(file->sections, keyfile_section_free_cb, file);
 	mowgli_free(file);
 }
 
@@ -78,26 +81,9 @@ keyfile_create_section(keyfile_t *parent, const char *name)
 	out->name = strdup(name);
 	out->lines = mowgli_patricia_create(nocanon);
 
-	mowgli_node_add(out, &out->node, &parent->sections);
+	mowgli_patricia_add(parent->sections, out->name, out);
 
 	return out;
-}
-
-static keyfile_section_t *
-keyfile_locate_section(keyfile_t *parent, const char *name)
-{
-	mowgli_node_t *n;
-	keyfile_section_t *out;
-
-	MOWGLI_ITER_FOREACH(n, parent->sections.head)
-	{
-		out = (keyfile_section_t *) n->data;
-
-		if (!strcasecmp(out->name, name))
-			return out;
-	}
-
-	return NULL;
 }
 
 keyfile_t *
@@ -119,7 +105,7 @@ keyfile_open(const char *filename)
 			{
 				*tmp = '\0';
 
-				if ((sec = keyfile_locate_section(out, &buffer[1])) == NULL)
+				if ((sec = mowgli_patricia_retrieve(out->sections, &buffer[1])) == NULL)
 					sec = keyfile_create_section(out, &buffer[1]);
 				else
 					mowgli_log("Duplicate section %s in %s", &buffer[1], filename);
@@ -159,12 +145,22 @@ keyfile_write_line_cb(const char *key, void *data, void *privdata)
 	return 0;
 }
 
+int
+keyfile_write_section_cb(const char *key, void *data, void *privdata)
+{
+	FILE *f = (FILE *) privdata;
+	keyfile_section_t *sec = data;
+
+	fprintf(f, "[%s]\n", sec->name);
+	mowgli_patricia_foreach(sec->lines, keyfile_write_line_cb, f);
+
+	return 0;
+}
+
 mcs_response_t
 keyfile_write(keyfile_t *self, const char *filename)
 {
 	FILE *f = fopen(filename, "w+t");
-	mowgli_node_t *n;
-	keyfile_section_t *sec;
 
 	if (f == NULL)
 	{
@@ -173,13 +169,7 @@ keyfile_write(keyfile_t *self, const char *filename)
 		return MCS_FAIL;
 	}
 
-	MOWGLI_ITER_FOREACH(n, self->sections.head)
-	{
-		sec = (keyfile_section_t *) n->data;
-		fprintf(f, "[%s]\n", sec->name);
-
-		mowgli_patricia_foreach(sec->lines, keyfile_write_line_cb, f);
-	}
+	mowgli_patricia_foreach(self->sections, keyfile_write_section_cb, f);
 
 	fsync(fileno(f));
 	fclose(f);
@@ -194,7 +184,7 @@ keyfile_get_string(keyfile_t *self, const char *section,
 	keyfile_section_t *sec;
 	const char *val;
 
-	if ((sec = keyfile_locate_section(self, section)) == NULL)
+	if ((sec = mowgli_patricia_retrieve(self->sections, section)) == NULL)
 		return MCS_FAIL;
 	if ((val = mowgli_patricia_retrieve(sec->lines, key)) == NULL)
 		return MCS_FAIL;
@@ -284,7 +274,7 @@ keyfile_set_string(keyfile_t *self, const char *section,
 	keyfile_section_t *sec;
 	char *val;
 
-	sec = keyfile_locate_section(self, section);
+	sec = mowgli_patricia_retrieve(self->sections, section);
 	if (sec == NULL)
 		sec = keyfile_create_section(self, section);
 
@@ -365,7 +355,7 @@ keyfile_unset_key(keyfile_t *self, const char *section,
 	keyfile_section_t *sec;
 	char *value;
 
-	if ((sec = keyfile_locate_section(self, section)) != NULL)
+	if ((sec = mowgli_patricia_retrieve(self->sections, section)) != NULL)
 	{
 		if ((value = mowgli_patricia_retrieve(sec->lines, key)) != NULL)
 			free(value);
@@ -556,7 +546,7 @@ mowgli_queue_t *
 mcs_keyfile_get_keys(mcs_handle_t *self, const char *section)
 {
 	mcs_keyfile_handle_t *h = (mcs_keyfile_handle_t *) self->mcs_priv_handle;
-	keyfile_section_t *ks = keyfile_locate_section(h->kf, section);
+	keyfile_section_t *ks = mowgli_patricia_retrieve(h->kf->sections, section);
 	mowgli_queue_t *out = NULL;
 
 	if (ks == NULL)
@@ -572,14 +562,8 @@ mcs_keyfile_get_sections(mcs_handle_t *self)
 {
 	mcs_keyfile_handle_t *h = (mcs_keyfile_handle_t *) self->mcs_priv_handle;
 	mowgli_queue_t *out = NULL;
-	mowgli_node_t *iter;
 
-	MOWGLI_ITER_FOREACH(iter, h->kf->sections.head)
-	{
-		keyfile_section_t *ks = (keyfile_section_t *) iter->data;
-
-		out = mowgli_queue_shift(out, strdup(ks->name));
-	}
+	mowgli_patricia_foreach(h->kf->sections, keyfile_collect_lines_cb, &out);
 
 	return out;
 }

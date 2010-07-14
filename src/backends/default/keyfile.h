@@ -44,7 +44,7 @@ typedef struct {
 } keyfile_section_t;
 
 typedef struct {
-	mowgli_list_t sections;
+	mowgli_patricia_t *sections;
 } keyfile_t;
 
 #ifdef __cplusplus
