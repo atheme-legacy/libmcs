@@ -1,0 +1,34 @@
+LIBRARY libmcs.dll
+EXPORTS
+mcs_backend_get_list
+mcs_backend_register
+mcs_backend_select
+mcs_backend_unregister
+mcs_backends DATA
+mcs_create_directory
+mcs_destroy
+mcs_fini
+mcs_get_bool
+mcs_get_double
+mcs_get_float
+mcs_get_int
+mcs_get_keys
+mcs_get_sections
+mcs_get_string
+mcs_handle_class_init
+mcs_init
+mcs_load_plugins
+mcs_new
+mcs_set_bool
+mcs_set_double
+mcs_set_float
+mcs_set_int
+mcs_set_string
+mcs_strcasecanon
+mcs_strlcat
+mcs_strlcpy
+mcs_strndup
+mcs_strnlen
+mcs_unload_plugins
+mcs_unset_key
+mcs_version

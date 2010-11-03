@@ -33,18 +33,18 @@
 #ifndef __LIBMCS_MCS_H__
 #define __LIBMCS_MCS_H__
 
-#include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <dirent.h>
 #include <stdio.h>
 #include <limits.h>
 #include <stdarg.h>
 #include <errno.h>
 
-#ifndef __WIN32__
+#ifndef _WIN32
+#include <unistd.h>
+#include <dirent.h>
 #include <dlfcn.h>
 #endif
 
@@ -52,6 +52,16 @@
 
 #ifdef _MCS_CORE
 # include <libmcs/mcs_config.h>
+
+# ifdef _WIN32
+#  ifdef _MSC_VER
+#   define mode_t       unsigned short int
+#  endif
+#  define snprintf      _snprintf
+#  define strcasecmp    _stricmp
+#  define strdup        _strdup
+# endif
+
 #endif
 
 /*! mcs_response_t denotes the status of a transaction. */

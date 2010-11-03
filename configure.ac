@@ -3,7 +3,7 @@ dnl Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.59])
 AC_INIT([libmcs], [0.8.0], [bugs+libmcs@atheme.org])
-AC_CONFIG_SRCDIR([src/libmcs/mcs_loader.c])
+AC_CONFIG_SRCDIR([src/libmcs/mcs_backends.c])
 AC_CONFIG_HEADER([src/libmcs/mcs_config.h])
 
 AC_CANONICAL_HOST
@@ -25,6 +25,19 @@ AC_SUBST([PACKAGE])
 dnl Checks for libraries.
 BUILDSYS_SHARED_LIB
 AC_CHECK_LIB([dl], [dlopen], [LIBS="$LIBS -ldl"])
+
+dnl Detect which loader to use
+AC_MSG_CHECKING(loader type)
+case "$target" in
+*-*-mingw32)
+    MCS_LOADER='mcs_loader_win32.c'
+	;;
+*)
+    MCS_LOADER='mcs_loader_posix.c'
+	;;
+esac
+AC_MSG_RESULT($MCS_LOADER);
+AC_SUBST(MCS_LOADER)
 
 dnl Checks for header files.
 AC_HEADER_DIRENT

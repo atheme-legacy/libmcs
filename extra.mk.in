@@ -8,3 +8,4 @@ KCONFIG_FLAGS = @KCONFIG_FLAGS@
 KCONFIG_LIBS = @KCONFIG_LIBS@
 plugindir = ${libdir}/mcs
 MCS_SYSCONFDIR = ${sysconfdir}
+MCS_LOADER = @MCS_LOADER@

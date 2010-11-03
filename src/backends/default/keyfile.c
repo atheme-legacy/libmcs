@@ -160,7 +160,7 @@ keyfile_write_section_cb(const char *key, void *data, void *privdata)
 mcs_response_t
 keyfile_write(keyfile_t *self, const char *filename)
 {
-	FILE *f = fopen(filename, "w+t");
+	FILE *f = fopen(filename, "w+b");
 
 	if (f == NULL)
 	{
@@ -171,7 +171,11 @@ keyfile_write(keyfile_t *self, const char *filename)
 
 	mowgli_patricia_foreach(self->sections, keyfile_write_section_cb, f);
 
+#ifdef _WIN32
+	_commit(fileno(f));
+#else
 	fsync(fileno(f));
+#endif
 	fclose(f);
 
 	return MCS_OK;
@@ -381,7 +385,7 @@ mcs_keyfile_new(char *domain)
 	char scratch[PATH_MAX];
 	char *magic = getenv("XDG_CONFIG_HOME");
 
-#if defined(__WIN32) || defined(__MINGW32__)
+#if defined(_WIN32)
 	const mode_t mode755 = 0;
 #else
 	const mode_t mode755 = S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH |
