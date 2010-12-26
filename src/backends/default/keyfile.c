@@ -424,10 +424,15 @@ mcs_keyfile_destroy(mcs_handle_t *self)
 	mcs_strlcpy(tfile, h->loc, PATH_MAX);
 	mcs_strlcat(tfile, ".tmp", PATH_MAX);
 
-	keyfile_write(h->kf, tfile);
+	mcs_response_t ret = keyfile_write(h->kf, tfile);
 	keyfile_destroy(h->kf);
 
-	rename(tfile, h->loc);
+	if (ret == MCS_OK)
+	{
+		unlink(h->loc);
+		if (rename(tfile, h->loc) < 0)
+			fprintf(stderr, "rename(%s, %s) failed: %s\n", tfile, h->loc, strerror(errno));
+	}
 
 	free(h->loc);
 	free(h);
