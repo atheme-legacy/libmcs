@@ -1,7 +1,8 @@
 /*
  * This is mcs; a modular configuration system.
  *
- * Copyright (c) 2009 Carlo Bramini <carlo.bramix -at- libero.it>
+ * Copyright (c) 2010 John Lindgren <john.lindgren -at- tds.net>
+ *               2009 Carlo Bramini <carlo.bramix -at- libero.it>
  *               2007 William Pitcock <nenolod -at- sacredspiral.co.uk>
  *
  * Redistribution and use in source and binary forms, with or without
@@ -38,8 +39,91 @@
 
 #include "libmcs/mcs.h"
 
+static void normalize_path(TCHAR *path)
+{
+    TCHAR *c;
+    for (c = path; *c; c++)
+    {
+        if (*c == '/')
+            *c = '\\';
+    }
+    c--;
+    if (*c == '\\' && c > path + 2)
+        *c = 0;
+}
+
+static TCHAR *last_path_element(TCHAR *path)
+{
+    TCHAR *c = _tcsrchr(path, '\\');
+    return (c && c[1]) ? c + 1 : NULL;
+}
+
+static void strip_path_element(TCHAR *path, TCHAR *elem)
+{
+    if (elem > path + 3)
+        elem[-1] = 0;
+    else
+        *elem = 0;
+}
+
+static const TCHAR *get_plugin_dir(void)
+{
+    static char called = 0, failed = 0;
+    static TCHAR dir[MAX_PATH];
+
+    if (called)
+        return failed ? _T(PLUGIN_DIR) : dir;
+    called = 1;
+
+    /* The folder where libmcs.dll was installed. */
+    TCHAR old[] = _T(BIN_DIR);
+    normalize_path(old);
+
+    /* Where is it now? */
+    MEMORY_BASIC_INFORMATION m;
+    if (!VirtualQuery(get_plugin_dir, &m, sizeof m))
+        goto ERR;
+    TCHAR new[MAX_PATH];
+    int len = GetModuleFileName(m.AllocationBase, new, MAX_PATH);
+    if (!len || len == MAX_PATH)
+        goto ERR;
+    normalize_path(new);
+
+    /* Strip the base name. */
+    TCHAR *base = last_path_element(new);
+    if (!base)
+        goto ERR;
+    strip_path_element(new, base);
+
+    /* Strip innermost folder names from both paths as long as they match.  This
+     * leaves a compile-time prefix and a run-time one to replace it with. */
+    TCHAR *a, *b;
+    while ((a = last_path_element(old)) && (b = last_path_element(new)) && !_tcsicmp(a, b))
+    {
+        strip_path_element(old, a);
+        strip_path_element(new, b);
+    }
+
+    /* The folder where plugins were installed. */
+    TCHAR olddir[] = _T(PLUGIN_DIR);
+    normalize_path(olddir);
+
+    /* Where we expect them to be now. */
+    len = _tcslen(old);
+    if (_tcsnicmp(olddir, old, len) || _tcslen(new) + _tcslen(olddir + len) + 1 > MAX_PATH)
+        goto ERR;
+    _tcscpy(dir, new);
+    _tcscpy(dir + _tcslen(dir), olddir + len);
+    return dir;
+
+ERR:
+    failed = 1;
+    return _T(PLUGIN_DIR);
+}
+
 /**
- * \brief Loads all of the plugins in -DPLUGIN_DIR.
+ * \brief Loads all of the plugins in <dllfolder>\mcs, where <dllfolder> is the
+ * folder containing libmcs.dll.
  */
 void
 mcs_load_plugins(void)
@@ -50,13 +134,14 @@ mcs_load_plugins(void)
     WIN32_FIND_DATA wfd;
 
     /* Allocate a buffer for building the TCHAR path */
-    lpPattern = (LPTSTR)_alloca((sizeof(PLUGIN_DIR) + PATH_MAX)*sizeof(TCHAR));
+    int len = _tcslen(get_plugin_dir());
+    lpPattern = (LPTSTR)_alloca((len + 1 + PATH_MAX)*sizeof(TCHAR));
 
     /* Point where PLUGIN_DIR finishes */
-    lpFileEnd = lpPattern + sizeof(PLUGIN_DIR)-1;
+    lpFileEnd = lpPattern + len;
 
     /* Copy the path into the destination */
-    _tcscpy(lpPattern, _T(PLUGIN_DIR));
+    _tcscpy(lpPattern, get_plugin_dir());
 
     /* Append '\\' if not included into PLUGIN_DIR */
     if (lpFileEnd[-1] != '\\')
