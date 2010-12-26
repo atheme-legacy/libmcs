@@ -14,6 +14,6 @@ INCLUDES = mcs.h
 
 include ../../buildsys.mk
 
-CPPFLAGS += ${MOWGLI_CFLAGS} -I. -I.. -DPLUGIN_DIR=\"${plugindir}\" -DPLUGIN_SUFFIX=\"${PLUGIN_SUFFIX}\" -D_MCS_CORE -DMCS_SYSCONFDIR=\"${sysconfdir}\"
+CPPFLAGS += ${MOWGLI_CFLAGS} -I. -I.. -DBIN_DIR=\"${bindir}\" -DPLUGIN_DIR=\"${plugindir}\" -DPLUGIN_SUFFIX=\"${PLUGIN_SUFFIX}\" -D_MCS_CORE -DMCS_SYSCONFDIR=\"${sysconfdir}\"
 CFLAGS += ${LIB_CFLAGS}
 LIBS += ${MOWGLI_LIBS}
