@@ -1,9 +1,0 @@
-PLUGIN = keyfile${PLUGIN_SUFFIX}
-SRCS = keyfile.c
-
-include ../../../buildsys.mk
-include ../../../extra.mk
-
-CPPFLAGS += ${PLUGIN_CPPFLAGS} ${MOWGLI_CFLAGS} -I../.. -I../../libmcs -DPLUGIN_DIR=\"${libdir}/mcs\"
-CFLAGS += ${PLUGIN_CFLAGS}
-LIBS += -L../../libmcs -lmcs ${MOWGLI_LIBS}

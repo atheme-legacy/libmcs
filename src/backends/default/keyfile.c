@@ -1,7 +1,7 @@
 /*
  * This is mcs; a modular configuration system.
  *
- * Copyright (c) 2007, 2010 William Pitcock <nenolod -at- atheme.org>
+ * Copyright (c) 2007-2011 William Pitcock <nenolod -at- atheme.org>
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -30,12 +30,23 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <locale.h>
+
 #include "libmcs/mcs.h"
-#include "keyfile.h"
 
-void nocanon(char *str) {}
+typedef struct {
+	char *name;
+	mowgli_patricia_t *lines;
+	mowgli_node_t node;
+} keyfile_section_t;
 
-keyfile_t *
+typedef struct {
+	mowgli_patricia_t *sections;
+} keyfile_t;
+
+static void nocanon(char *str) {}
+
+static keyfile_t *
 keyfile_new(void)
 {
 	keyfile_t *out;
@@ -63,7 +74,7 @@ keyfile_section_free_cb(const char *key, void *data, void *privdata)
 	mowgli_free(sec);
 }
 
-void
+static void
 keyfile_destroy(keyfile_t *file)
 {
 	if (file == NULL)
@@ -86,7 +97,7 @@ keyfile_create_section(keyfile_t *parent, const char *name)
 	return out;
 }
 
-keyfile_t *
+static keyfile_t *
 keyfile_open(const char *filename)
 {
 	FILE *f = fopen(filename, "rb");
@@ -134,7 +145,7 @@ keyfile_open(const char *filename)
 	return out;
 }
 
-int
+static int
 keyfile_write_line_cb(const char *key, void *data, void *privdata)
 {
 	FILE *f = (FILE *) privdata;
@@ -145,7 +156,7 @@ keyfile_write_line_cb(const char *key, void *data, void *privdata)
 	return 0;
 }
 
-int
+static int
 keyfile_write_section_cb(const char *key, void *data, void *privdata)
 {
 	FILE *f = (FILE *) privdata;
@@ -157,7 +168,7 @@ keyfile_write_section_cb(const char *key, void *data, void *privdata)
 	return 0;
 }
 
-mcs_response_t
+static mcs_response_t
 keyfile_write(keyfile_t *self, const char *filename)
 {
 	FILE *f = fopen(filename, "w+b");
@@ -181,7 +192,7 @@ keyfile_write(keyfile_t *self, const char *filename)
 	return MCS_OK;
 }
 
-mcs_response_t
+static mcs_response_t
 keyfile_get_string(keyfile_t *self, const char *section,
 		   const char *key, char **value)
 {
@@ -198,7 +209,7 @@ keyfile_get_string(keyfile_t *self, const char *section,
 	return MCS_OK;
 }
 
-mcs_response_t
+static mcs_response_t
 keyfile_get_int(keyfile_t *self, const char *section,
 	        const char *key, int *value)
 {
@@ -213,7 +224,7 @@ keyfile_get_int(keyfile_t *self, const char *section,
 	return MCS_OK;
 }
 
-mcs_response_t
+static mcs_response_t
 keyfile_get_bool(keyfile_t *self, const char *section,
 	         const char *key, int *value)
 {
@@ -231,7 +242,7 @@ keyfile_get_bool(keyfile_t *self, const char *section,
 	return MCS_OK;
 }
 
-mcs_response_t
+static mcs_response_t
 keyfile_get_float(keyfile_t *self, const char *section,
 	          const char *key, float *value)
 {
@@ -251,7 +262,7 @@ keyfile_get_float(keyfile_t *self, const char *section,
 	return MCS_OK;
 }
 
-mcs_response_t
+static mcs_response_t
 keyfile_get_double(keyfile_t *self, const char *section,
 	           const char *key, double *value)
 {
@@ -271,7 +282,7 @@ keyfile_get_double(keyfile_t *self, const char *section,
 	return MCS_OK;
 }
 
-mcs_response_t
+static mcs_response_t
 keyfile_set_string(keyfile_t *self, const char *section,
 		   const char *key, const char *value)
 {
@@ -294,7 +305,7 @@ keyfile_set_string(keyfile_t *self, const char *section,
 	return MCS_OK;
 }
 
-mcs_response_t
+static mcs_response_t
 keyfile_set_int(keyfile_t *self, const char *section,
 		const char *key, int value)
 {
@@ -306,7 +317,7 @@ keyfile_set_int(keyfile_t *self, const char *section,
 	return MCS_OK;
 }
 
-mcs_response_t
+static mcs_response_t
 keyfile_set_bool(keyfile_t *self, const char *section,
 		 const char *key, int value)
 {
@@ -318,7 +329,7 @@ keyfile_set_bool(keyfile_t *self, const char *section,
 	return MCS_OK;
 }
 
-mcs_response_t
+static mcs_response_t
 keyfile_set_float(keyfile_t *self, const char *section,
 		  const char *key, float value)
 {
@@ -335,7 +346,7 @@ keyfile_set_float(keyfile_t *self, const char *section,
 	return MCS_OK;
 }
 
-mcs_response_t
+static mcs_response_t
 keyfile_set_double(keyfile_t *self, const char *section,
 		   const char *key, double value)
 {
@@ -352,7 +363,7 @@ keyfile_set_double(keyfile_t *self, const char *section,
 	return MCS_OK;
 }
 
-mcs_response_t
+static mcs_response_t
 keyfile_unset_key(keyfile_t *self, const char *section,
 		  const char *key)
 {
@@ -372,14 +383,14 @@ keyfile_unset_key(keyfile_t *self, const char *section,
 
 /* ***************************************************************** */
 
-extern mcs_backend_t mcs_backend;
+extern mcs_backend_t keyfile_backend;
 
 typedef struct {
 	char *loc;
 	keyfile_t *kf;
 } mcs_keyfile_handle_t;
 
-mcs_handle_t *
+static mcs_handle_t *
 mcs_keyfile_new(char *domain)
 {
 	char scratch[PATH_MAX];
@@ -395,7 +406,7 @@ mcs_keyfile_new(char *domain)
 	mcs_keyfile_handle_t *h = calloc(sizeof(mcs_keyfile_handle_t), 1);
 	mcs_handle_t *out = calloc(sizeof(mcs_handle_t), 1);
 
-	out->base = &mcs_backend;
+	out->base = &keyfile_backend;
 	out->mcs_priv_handle = h;
 
 	if (magic != NULL)
@@ -412,7 +423,7 @@ mcs_keyfile_new(char *domain)
 	return out;
 }
 
-void
+static void
 mcs_keyfile_destroy(mcs_handle_t *self)
 {
 	char tfile[PATH_MAX];
@@ -440,7 +451,7 @@ mcs_keyfile_destroy(mcs_handle_t *self)
 	free(self);
 }
 
-mcs_response_t
+static mcs_response_t
 mcs_keyfile_get_string(mcs_handle_t *self, const char *section,
 		       const char *key, char **value)
 {
@@ -449,7 +460,7 @@ mcs_keyfile_get_string(mcs_handle_t *self, const char *section,
 	return keyfile_get_string(h->kf, section, key, value);
 }
 
-mcs_response_t
+static mcs_response_t
 mcs_keyfile_get_int(mcs_handle_t *self, const char *section,
 		    const char *key, int *value)
 {
@@ -458,7 +469,7 @@ mcs_keyfile_get_int(mcs_handle_t *self, const char *section,
 	return keyfile_get_int(h->kf, section, key, value);
 }
 
-mcs_response_t
+static mcs_response_t
 mcs_keyfile_get_bool(mcs_handle_t *self, const char *section,
 		     const char *key, int *value)
 {
@@ -467,7 +478,7 @@ mcs_keyfile_get_bool(mcs_handle_t *self, const char *section,
 	return keyfile_get_bool(h->kf, section, key, value);
 }
 
-mcs_response_t
+static mcs_response_t
 mcs_keyfile_get_float(mcs_handle_t *self, const char *section,
 		      const char *key, float *value)
 {
@@ -476,7 +487,7 @@ mcs_keyfile_get_float(mcs_handle_t *self, const char *section,
 	return keyfile_get_float(h->kf, section, key, value);
 }
 
-mcs_response_t
+static mcs_response_t
 mcs_keyfile_get_double(mcs_handle_t *self, const char *section,
 		       const char *key, double *value)
 {
@@ -485,7 +496,7 @@ mcs_keyfile_get_double(mcs_handle_t *self, const char *section,
 	return keyfile_get_double(h->kf, section, key, value);
 }
 
-mcs_response_t
+static mcs_response_t
 mcs_keyfile_set_string(mcs_handle_t *self, const char *section,
 		       const char *key, const char *value)
 {
@@ -494,7 +505,7 @@ mcs_keyfile_set_string(mcs_handle_t *self, const char *section,
 	return keyfile_set_string(h->kf, section, key, value);
 }
 
-mcs_response_t
+static mcs_response_t
 mcs_keyfile_set_int(mcs_handle_t *self, const char *section,
 		    const char *key, int value)
 {
@@ -503,7 +514,7 @@ mcs_keyfile_set_int(mcs_handle_t *self, const char *section,
 	return keyfile_set_int(h->kf, section, key, value);
 }
 
-mcs_response_t
+static mcs_response_t
 mcs_keyfile_set_bool(mcs_handle_t *self, const char *section,
 		     const char *key, int value)
 {
@@ -512,7 +523,7 @@ mcs_keyfile_set_bool(mcs_handle_t *self, const char *section,
 	return keyfile_set_bool(h->kf, section, key, value);
 }
 
-mcs_response_t
+static mcs_response_t
 mcs_keyfile_set_float(mcs_handle_t *self, const char *section,
 		      const char *key, float value)
 {
@@ -521,7 +532,7 @@ mcs_keyfile_set_float(mcs_handle_t *self, const char *section,
 	return keyfile_set_float(h->kf, section, key, value);
 }
 
-mcs_response_t
+static mcs_response_t
 mcs_keyfile_set_double(mcs_handle_t *self, const char *section,
 		       const char *key, double value)
 {
@@ -530,7 +541,7 @@ mcs_keyfile_set_double(mcs_handle_t *self, const char *section,
 	return keyfile_set_double(h->kf, section, key, value);
 }
 
-mcs_response_t
+static mcs_response_t
 mcs_keyfile_unset_key(mcs_handle_t *self, const char *section,
 		      const char *key)
 {
@@ -539,7 +550,7 @@ mcs_keyfile_unset_key(mcs_handle_t *self, const char *section,
 	return keyfile_unset_key(h->kf, section, key);
 }
 
-int
+static int
 keyfile_collect_lines_cb(const char *key, void *data, void *privdata)
 {
 	mowgli_queue_t **out = privdata;
@@ -551,7 +562,7 @@ keyfile_collect_lines_cb(const char *key, void *data, void *privdata)
 	return 0;
 }
 
-mowgli_queue_t *
+static mowgli_queue_t *
 mcs_keyfile_get_keys(mcs_handle_t *self, const char *section)
 {
 	mcs_keyfile_handle_t *h = (mcs_keyfile_handle_t *) self->mcs_priv_handle;
@@ -566,7 +577,7 @@ mcs_keyfile_get_keys(mcs_handle_t *self, const char *section)
 	return out;
 }
 
-mowgli_queue_t *
+static mowgli_queue_t *
 mcs_keyfile_get_sections(mcs_handle_t *self)
 {
 	mcs_keyfile_handle_t *h = (mcs_keyfile_handle_t *) self->mcs_priv_handle;
@@ -577,7 +588,7 @@ mcs_keyfile_get_sections(mcs_handle_t *self)
 	return out;
 }
 
-mcs_backend_t mcs_backend = {
+mcs_backend_t keyfile_backend = {
 	NULL,
 	"default",
 	mcs_keyfile_new,

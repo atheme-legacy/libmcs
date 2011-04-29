@@ -1,7 +1,7 @@
 /*
  * This is mcs; a modular configuration system.
  *
- * Copyright (c) 2007 William Pitcock <nenolod -at- sacredspiral.co.uk>
+ * Copyright (c) 2007-2011 William Pitcock <nenolod -at- sacredspiral.co.uk>
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -32,6 +32,8 @@
 
 #include "libmcs/mcs.h"
 
+extern mcs_backend_t keyfile_backend; /* ../backends/default/keyfile.c */
+
 /**
  * \brief A list of registered backends.
  *
@@ -42,7 +44,7 @@ extern mowgli_patricia_t *mcs_backends;
 /**
  * \brief Initialises the mcs library classes and loads the backend plugins.
  *
- * mcs_init() initialises mowgli.object, followed by all of the mcs 
+ * mcs_init() initialises mowgli.object, followed by all of the mcs
  * library classes which extend mowgli.object to provide an extensible
  * configuration management system.
  *
@@ -55,29 +57,28 @@ mcs_init(void)
 	mowgli_init();
 
 	mcs_backends = mowgli_patricia_create(mcs_strcasecanon);
+	mcs_backend_register(&keyfile_backend);
 
 	mcs_handle_class_init();
-	mcs_load_plugins();
 }
 
 /**
  * \brief Releases resources used by the mcs backend plugins.
  *
- * This function unloads and releases resources used by the mcs backend 
+ * This function unloads and releases resources used by the mcs backend
  * plugins.
  */
 void
 mcs_fini(void)
 {
-	mcs_unload_plugins(mcs_backends);
-
+	mcs_backend_unregister(&keyfile_backend);
 	mowgli_patricia_destroy(mcs_backends, NULL, NULL);
 }
 
 /**
  * \brief Retrieves the version of the mcs implementation.
  *
- * This function is useful for displaying the version of the system 
+ * This function is useful for displaying the version of the system
  * implementation.
  *
  * \return A dynamically allocated string containing the mcs implementation.

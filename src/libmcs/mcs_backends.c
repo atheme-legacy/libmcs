@@ -95,62 +95,12 @@ mcs_backend_get_list(void)
 /**
  * \brief Determines the backend that should be used.
  *
- * This function checks the environment variable, MCS_BACKEND first. If 
- * that is empty, it checks $HOME/.mcs-backend, followed by 
- * /etc/mcs-backend. If no preference is found, it returns "default".
+ * Currently, this function always returns "default".
  *
  * \return The name of the backend that should be used.
  */
 const char *
 mcs_backend_select(void)
 {
-	char *env = getenv("MCS_BACKEND");
-	char buf[1024];
-	FILE *f;
-	mowgli_queue_t *l;
-	char *tptr;
-
-	if (env != NULL)
-		return env;
-
-	env = getenv("HOME");
-
-	if (env == NULL)
-		return NULL;
-
-	snprintf(buf, 1024, "%s/.mcs-backend", env);
-
-	f = fopen(buf, "rb");
-
-	if (f != NULL)
-	{
-		fgets(buf, 1024, f);
-		fclose(f);
-	}
-	else
-	{
-		f = fopen(MCS_SYSCONFDIR "/mcs-backend", "rb");
-
-		if (f != NULL)
-		{
-			fgets(buf, 1024, f);
-			fclose(f);
-		}
-	}
-
-	if ((tptr = strchr(buf, '\n')) != NULL)
-		*tptr = '\0';
-	else
-		return "default";
-
-	/* check to make sure we have this backend */
-	for (l = mcs_backend_get_list(); l != NULL; l = l->next)
-	{
-		mcs_backend_t *b = (mcs_backend_t *) l->data;
-
-		if (!strcasecmp(b->name, buf))
-			return b->name;
-	}
-
 	return "default";
 }
